@@ -2,7 +2,7 @@
 
 Eine Web-App für ZHAW-Studierende zum Finden und Bewerten von Lernorten – community-getrieben, mit fokussierten Infos zu WLAN, Lärmpegel, Steckdosen und Verfügbarkeit.
 
-> Modul: Prototyping, ZHAW Frühjahrsemester 2026
+> Modul: Prototyping, ZHAW Frühlingssemester 2026
 > Autor: Erion Rexhepi
 > Dozenten: Max Meisterhans, Mirella Moser
 
@@ -94,6 +94,8 @@ Die Projektarbeit wird über **GitHub Issues** entlang des Wochenplans strukturi
 Sprechende Commit-Messages folgen dem Schema **Conventional Commits** (z.B. `feat:`, `fix:`, `chore:`, `docs:`).
 
 Sessions und Zwischenstände werden parallel in einer `STATUS.md` festgehalten (nicht im Repo, lokales Arbeitsdokument).
+
+**Hinweis zur Datenbank-Sicherheit**: Atlas Network Access ist bewusst auf `0.0.0.0/0` gesetzt, weil Netlify-Deployments ohne fixe IP-Adresse funktionieren und die Datenbank parallel in einem anderen Modul genutzt wird. Der Schutz erfolgt über ein autogeneriertes, langes Passwort des Datenbank-Users. Credentials liegen ausschliesslich in der lokalen `.env` (nicht im Repo) bzw. als Environment-Variable im Netlify-Dashboard.
 
 ## 6. KI-Deklaration
 
