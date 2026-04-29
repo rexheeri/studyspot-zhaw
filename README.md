@@ -2,8 +2,8 @@
 
 Eine Web-App für ZHAW-Studierende zum Finden und Bewerten von Lernorten – community-getrieben, mit fokussierten Infos zu WLAN, Lärmpegel, Steckdosen und Verfügbarkeit.
 
-> Modul: Prototyping, ZHAW Frühlingssemester 2026
-> Autor: Erion Rexhepi
+> Modul: Prototyping, ZHAW Frühlingssemester 2026  
+> Autor: Erion Rexhepi  
 > Dozenten: Max Meisterhans, Mirella Moser
 
 ---
@@ -22,14 +22,14 @@ Die App läuft danach auf http://localhost:5173
 
 ## Tech-Stack
 
-| Bereich            | Tool                |
-| ------------------ | ------------------- |
-| Framework          | SvelteKit           |
-| Styling            | Bootstrap 5         |
-| Datenbank          | MongoDB Atlas       |
-| Auth (geplant W12) | Supabase            |
-| Hosting            | Netlify             |
-| Versionskontrolle  | Git / GitHub        |
+| Bereich           | Tool               |
+| ----------------- | ------------------ |
+| Framework         | SvelteKit          |
+| Styling           | Bootstrap 5        |
+| Datenbank         | MongoDB Atlas      |
+| Auth              | Supabase (geplant) |
+| Hosting           | Netlify            |
+| Versionskontrolle | Git / GitHub       |
 
 ---
 
@@ -65,19 +65,25 @@ Output: 8 Detail-Wireframes als Low-Fi-Vorlage für das Figma-Mockup (siehe Anha
 
 #### 3.4.1 Entwurf (Design)
 
-*folgt – High-Fi Figma-Mockup auf Basis der W9-Wireframes (siehe Issue #3)*
+In W10 wurde auf Basis der W9-Wireframes ein klickbarer Hi-Fi-Prototyp in Figma erstellt. Der Prototyp umfasst 8 Screens (4 Desktop, 4 Mobile) und deckt folgende Workflows ab: Spot finden und bewerten, Filtern, Karten-Toggle und Spot erfassen.
+
+[Figma-Prototyp öffnen](https://www.figma.com/design/naxGM6CVN7PpOZ6JGnyVzp/StudySpot-ZHAW)
 
 #### 3.4.2 Umsetzung (Technik)
 
-Das Projekt wurde mit **SvelteKit** umgesetzt und nutzt **MongoDB Atlas** als Datenbank. Das Styling basiert auf **Bootstrap 5**. Deployment erfolgt automatisiert auf **Netlify** bei jedem Push auf `main`.
+Das Projekt wurde mit **SvelteKit** umgesetzt und nutzt **MongoDB Atlas** als Datenbank. Das Styling basiert auf **Bootstrap 5**. Deployment ist auf **Netlify** geplant und wird in W12 eingerichtet – bei jedem Push auf `main` soll ein automatisches Deployment ausgelöst werden.
 
 Datenmodell (siehe ER-Diagramm im Anhang, Issue #4):
 
-- **Collection `spots`**: Lernorte mit Name, Adresse, Beschreibung, WLAN, Lärmpegel, Steckdosen, Bild-URL.
+- **Collection `spots`**: Lernorte mit Name, Adresse, Beschreibung, WLAN, Lärmpegel, Steckdosen, Bild-URL, Meetingräume, Drucker, Reservierungs-URL.
 - **Collection `reviews`**: Bewertungen mit Referenz auf einen Spot, Sterne (1–5), Kommentar, Autor.
 - **Collection `checkins`** (Extension): Zeitlich begrenzte Statusmeldungen pro Spot.
 
-*Implementierungsdetails folgen ab W11.*
+**Routing-Struktur:** Die App nutzt SvelteKit File-Based Routing mit `+page.svelte` für die UI und `+page.server.js` für alle Datenbankzugriffe. Datenbankoperationen laufen ausschliesslich serverseitig – der MongoDB-URI wird nie an den Client übertragen.
+
+**MongoDB-Anbindung:** Die Verbindung wird in `src/lib/db.js` zentral verwaltet mit dem nativen MongoDB Driver (kein Mongoose). Der URI wird via `.env` als `MONGODB_URI` injiziert.
+
+**Implementierte Features (W11):** Spots auflisten, Spot-Detailseite, Spot erfassen (Form Action), Review abgeben (Form Action), interaktive Leaflet-Karte mit Geocoding via Nominatim, zusätzliche Felder für Meetingräume, Drucker und Reservierungslink.
 
 ### 3.5 Validate
 
@@ -99,15 +105,7 @@ Sessions und Zwischenstände werden parallel in einer `STATUS.md` festgehalten (
 
 ## 6. KI-Deklaration
 
-Im Rahmen dieses Projekts wurde **Claude (Anthropic)** als Coding-Mentor und Dokumentations-Assistent verwendet. Konkret bisher:
-
-- **Projekt-Setup (W8/W9)**: Schritt-für-Schritt-Anleitung für GitHub-Repo-Erstellung, SvelteKit-Initialisierung, `.env`-Hygiene und ersten sauberen Commit.
-- **Issue-Strukturierung**: Vorformulierung von 12 GitHub-Issues entlang des Wochenplans, inklusive Akzeptanzkriterien und Label-Vergabe.
-- **README-Skelett**: Strukturvorschläge basierend auf der Modulvorlage; Formulierung von Kapitel 1 (Ausgangslage) und Kapitel 2 (Lösungsidee) auf Basis meiner Stichworte.
-
-Sämtliche inhaltlichen Entscheidungen (Variantenwahl, Tech-Stack, Datenmodell, Priorisierung) wurden von mir getroffen. Code wird ab W11 selbst geschrieben; KI wird gezielt für Code-Reviews, Erklärungen und das Aufzeigen von Alternativen genutzt – nicht für das blinde Übernehmen ganzer Codeblöcke.
-
-*Wird laufend ergänzt – siehe weitere Einträge ab W11.*
+*Wird laufend ergänzt.*
 
 ## 7. Anhang
 
