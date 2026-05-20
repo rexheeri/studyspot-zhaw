@@ -1,11 +1,107 @@
 <script>
+	import { onMount } from 'svelte';
+	import { PUBLIC_MAPBOX_TOKEN } from '$env/static/public';
+	import 'mapbox-gl/dist/mapbox-gl.css';
+
 	let { data } = $props();
 
-	const laermBadge = {
-		ruhig: 'success',
-		mittel: 'warning',
-		laut: 'danger'
-	};
+	const laermBadge = { ruhig: 'success', mittel: 'warning', laut: 'danger' };
+	const statusBadge = { ruhig: 'success', mittel: 'warning', voll: 'danger' };
+	const statusIcon = { ruhig: '🟢', mittel: '🟡', voll: '🔴' };
+
+	let mapDiv = $state(null);
+
+	function spotAdresse(spot) {
+		return (
+			spot.adresse ||
+			[spot.strasse, spot.plz && spot.ort ? `${spot.plz} ${spot.ort}` : spot.ort]
+				.filter(Boolean)
+				.join(', ')
+		);
+	}
+
+	function addMarker(mapboxgl, map, spot, lng, lat) {
+		const el = document.createElement('div');
+		el.innerHTML = `<i class="bi bi-geo-alt-fill" style="color:white;font-size:16px;line-height:1;pointer-events:none;"></i>`;
+		Object.assign(el.style, {
+			width: '36px',
+			height: '36px',
+			background: '#0d6efd',
+			borderRadius: '50%',
+			display: 'flex',
+			alignItems: 'center',
+			justifyContent: 'center',
+			boxShadow: '0 2px 10px rgba(13,110,253,0.45)',
+			transition: 'transform 200ms cubic-bezier(0.23,1,0.32,1)',
+			cursor: 'pointer'
+		});
+		el.addEventListener('mouseenter', () => (el.style.transform = 'scale(1.15)'));
+		el.addEventListener('mouseleave', () => (el.style.transform = 'scale(1)'));
+
+		const adresse = spotAdresse(spot);
+		const popup = new mapboxgl.Popup({ offset: 22, className: 'spot-mapbox-popup' }).setHTML(`
+			<div style="min-width:180px;padding:2px 0;">
+				<div style="font-weight:600;font-size:0.875rem;color:#212529;margin-bottom:3px;">${spot.name}</div>
+				<div style="font-size:0.75rem;color:#6c757d;margin-bottom:10px;line-height:1.4;">${adresse}</div>
+				<a href="/spots/${spot._id}" style="color:#0d6efd;font-size:0.8rem;text-decoration:none;font-weight:500;">Details →</a>
+			</div>`);
+
+		new mapboxgl.Marker({ element: el }).setLngLat([lng, lat]).setPopup(popup).addTo(map);
+	}
+
+	onMount(async () => {
+		if (!mapDiv || data.spots.length === 0) return;
+
+		// Dynamischer Import verhindert SSR-Fehler (mapbox-gl nutzt window)
+		const mapboxgl = (await import('mapbox-gl')).default;
+		mapboxgl.accessToken = PUBLIC_MAPBOX_TOKEN;
+
+		const map = new mapboxgl.Map({
+			container: mapDiv,
+			style: 'mapbox://styles/mapbox/streets-v12',
+			center: [8.727, 47.497],
+			zoom: 12
+		});
+
+		map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+		const mitCoords = data.spots.filter((s) => s.lat && s.lng);
+		const ohneCoords = data.spots.filter((s) => !s.lat || !s.lng);
+
+		const bounds = new mapboxgl.LngLatBounds();
+
+		map.on('load', () => {
+			for (const spot of mitCoords) {
+				addMarker(mapboxgl, map, spot, spot.lng, spot.lat);
+				bounds.extend([spot.lng, spot.lat]);
+			}
+
+			if (mitCoords.length === 1) {
+				map.setCenter([mitCoords[0].lng, mitCoords[0].lat]);
+				map.setZoom(15);
+			} else if (mitCoords.length > 1) {
+				map.fitBounds(bounds, { padding: 60, maxZoom: 16 });
+			}
+		});
+
+		// Spots ohne Koordinaten sequentiell geocodieren (Nominatim: 1 req/s)
+		for (const spot of ohneCoords) {
+			await new Promise((r) => setTimeout(r, 1100));
+			try {
+				const adresse = spotAdresse(spot);
+				const res = await fetch(
+					`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(adresse)}&limit=1`,
+					{ headers: { 'Accept-Language': 'de' } }
+				);
+				const results = await res.json();
+				if (results.length) {
+					addMarker(mapboxgl, map, spot, parseFloat(results[0].lon), parseFloat(results[0].lat));
+				}
+			} catch {
+				// Spot still übersprungen
+			}
+		}
+	});
 </script>
 
 <svelte:head>
@@ -21,43 +117,55 @@
 			<a href="/spots/create" class="alert-link ms-1">Ersten Spot eintragen</a>
 		</div>
 	{:else}
-		<div class="row g-4">
+		<!-- Spot-Karten -->
+		<div class="row g-4 mb-5">
 			{#each data.spots as spot (spot._id)}
 				<div class="col-md-4">
 					<div class="card h-100 shadow-sm">
 						{#if spot.bildUrl}
-							<img src={spot.bildUrl} alt={spot.name} style="width:100%; height:180px; object-fit:cover; border-radius:4px 4px 0 0;" />
+							<img
+								src={spot.bildUrl}
+								alt={spot.name}
+								style="width:100%; height:180px; object-fit:cover; border-radius:4px 4px 0 0;"
+							/>
 						{/if}
 						<div class="card-body d-flex flex-column">
-							<h5 class="card-title">{spot.name}</h5>
+							<div class="d-flex justify-content-between align-items-start mb-1">
+								<h5 class="card-title mb-0">{spot.name}</h5>
+								{#if spot.currentStatus}
+									<span class="badge bg-{statusBadge[spot.currentStatus]} ms-2">
+										{statusIcon[spot.currentStatus]} {spot.currentStatus}
+									</span>
+								{/if}
+							</div>
 							<p class="card-text text-muted mb-2">
-								<i class="bi bi-geo-alt me-1"></i>{spot.adresse}
+								<i class="bi bi-geo-alt me-1"></i>{spotAdresse(spot)}
 							</p>
 
 							<div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
 								<span class="badge bg-{laermBadge[spot.laerm] ?? 'secondary'}">
-									<i class="bi bi-volume-{spot.laerm === 'ruhig' ? 'mute' : spot.laerm === 'mittel' ? 'down' : 'up'} me-1"></i>
+									<i
+										class="bi bi-volume-{spot.laerm === 'ruhig'
+											? 'mute'
+											: spot.laerm === 'mittel'
+												? 'down'
+												: 'up'} me-1"
+									></i>
 									{spot.laerm}
 								</span>
-
 								{#if spot.wlan}
-									<span class="badge bg-primary">
-										<i class="bi bi-wifi me-1"></i>WLAN
-									</span>
+									<span class="badge bg-primary"><i class="bi bi-wifi me-1"></i>WLAN</span>
 								{:else}
-									<span class="badge bg-secondary">
-										<i class="bi bi-wifi-off me-1"></i>Kein WLAN
-									</span>
+									<span class="badge bg-secondary"
+										><i class="bi bi-wifi-off me-1"></i>Kein WLAN</span
+									>
 								{/if}
-
 								{#if spot.steckdosen}
-									<span class="badge bg-primary">
-										<i class="bi bi-plug me-1"></i>Steckdosen
-									</span>
+									<span class="badge bg-primary"><i class="bi bi-plug me-1"></i>Steckdosen</span>
 								{:else}
-									<span class="badge bg-secondary">
-										<i class="bi bi-plug me-1"></i>Keine Steckdosen
-									</span>
+									<span class="badge bg-secondary"
+										><i class="bi bi-plug me-1"></i>Keine Steckdosen</span
+									>
 								{/if}
 							</div>
 
@@ -69,5 +177,30 @@
 				</div>
 			{/each}
 		</div>
+
+		<!-- Übersichtskarte -->
+		<h2 class="h4 mb-3">Alle Lernorte auf der Karte</h2>
+		<div bind:this={mapDiv} class="map-container"></div>
 	{/if}
 </div>
+
+<style>
+	.map-container {
+		height: 450px;
+		border-radius: 12px;
+		overflow: hidden;
+		box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1), 0 1px 6px rgba(0, 0, 0, 0.06);
+	}
+
+	/* Mapbox Popup Card-Styling */
+	:global(.spot-mapbox-popup .mapboxgl-popup-content) {
+		border-radius: 10px;
+		padding: 14px 16px;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.06);
+		border: 1px solid rgba(0, 0, 0, 0.08);
+	}
+
+	:global(.spot-mapbox-popup .mapboxgl-popup-tip) {
+		border-top-color: white;
+	}
+</style>

@@ -3,16 +3,20 @@
 	import { tick } from 'svelte';
 	import { cubicOut } from 'svelte/easing';
 
-	let { form } = $props();
+	let { data, form } = $props();
 
-	let strasse = $state(form?.strasse ?? '');
-	let plz = $state(form?.plz ?? '');
-	let ort = $state(form?.ort ?? '');
-	let lat = $state('');
-	let lng = $state('');
-	let adresseAnzeige = $state(
-		strasse ? [strasse, plz && ort ? `${plz} ${ort}` : ort].filter(Boolean).join(', ') : ''
-	);
+	const s = data.spot;
+
+	let strasse = $state(form?.strasse ?? s.strasse ?? '');
+	let plz = $state(form?.plz ?? s.plz ?? '');
+	let ort = $state(form?.ort ?? s.ort ?? '');
+	let lat = $state(String(s.lat ?? ''));
+	let lng = $state(String(s.lng ?? ''));
+
+	const adresseInit =
+		s.adresse ||
+		[strasse, plz && ort ? `${plz} ${ort}` : ort].filter(Boolean).join(', ');
+	let adresseAnzeige = $state(adresseInit);
 
 	let vorschlaege = $state([]);
 	let vorschlagOffen = $state(false);
@@ -121,10 +125,10 @@
 	function ladeLeaflet() {
 		return new Promise((resolve) => {
 			if (window.L) { resolve(); return; }
-			const s = document.createElement('script');
-			s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-			s.onload = resolve;
-			document.head.appendChild(s);
+			const sc = document.createElement('script');
+			sc.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+			sc.onload = resolve;
+			document.head.appendChild(sc);
 		});
 	}
 
@@ -148,18 +152,18 @@
 </script>
 
 <svelte:head>
-	<title>Spot eintragen – StudySpot ZHAW</title>
+	<title>{s.name} bearbeiten – StudySpot ZHAW</title>
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </svelte:head>
 
 <div class="container py-5" style="max-width: 640px;">
-	<h1 class="mb-4">Neuen Spot eintragen</h1>
+	<h1 class="mb-4">Spot bearbeiten</h1>
 
 	{#if form?.error}
 		<div class="alert alert-danger">{form.error}</div>
 	{/if}
 
-	<form method="POST" action="?/createSpot" use:enhance class="card shadow p-4 p-md-5">
+	<form method="POST" action="?/updateSpot" use:enhance class="card shadow p-4 p-md-5">
 		<div class="mb-3">
 			<label for="name" class="form-label fw-medium">
 				Name <span class="text-danger">*</span>
@@ -169,12 +173,12 @@
 				id="name"
 				name="name"
 				class="form-control"
-				value={form?.name ?? ''}
+				value={form?.name ?? s.name}
 				required
 			/>
 		</div>
 
-		<!-- Adresse (Ein-Feld mit Autocomplete) -->
+		<!-- Adresse (Ein-Feld mit Autocomplete, vorausgefüllt) -->
 		<div class="mb-3">
 			<label for="adresse" class="form-label fw-medium">
 				Adresse <span class="text-danger">*</span>
@@ -231,14 +235,14 @@
 			</div>
 		</div>
 
-		<!-- Hidden inputs für MongoDB -->
+		<!-- Hidden inputs – bestehende Werte, werden bei Autocomplete-Auswahl aktualisiert -->
 		<input type="hidden" name="strasse" bind:value={strasse} />
 		<input type="hidden" name="plz" bind:value={plz} />
 		<input type="hidden" name="ort" bind:value={ort} />
 		<input type="hidden" name="lat" bind:value={lat} />
 		<input type="hidden" name="lng" bind:value={lng} />
 
-		<!-- Karten-Vorschau -->
+		<!-- Karten-Vorschau (erscheint nach Autocomplete-Auswahl) -->
 		{#if karteAnzeigen}
 			<div
 				bind:this={mapContainer}
@@ -250,16 +254,16 @@
 		<div class="mb-3">
 			<label for="beschreibung" class="form-label fw-medium">Beschreibung</label>
 			<textarea id="beschreibung" name="beschreibung" class="form-control" rows="3"
-				>{form?.beschreibung ?? ''}</textarea
+				>{form?.beschreibung ?? s.beschreibung ?? ''}</textarea
 			>
 		</div>
 
 		<div class="mb-3">
 			<label for="laerm" class="form-label fw-medium">Lärmpegel</label>
 			<select id="laerm" name="laerm" class="form-select">
-				<option value="ruhig">Ruhig</option>
-				<option value="mittel">Mittel</option>
-				<option value="laut">Laut</option>
+				<option value="ruhig" selected={s.laerm === 'ruhig'}>Ruhig</option>
+				<option value="mittel" selected={s.laerm === 'mittel'}>Mittel</option>
+				<option value="laut" selected={s.laerm === 'laut'}>Laut</option>
 			</select>
 		</div>
 
@@ -271,7 +275,7 @@
 				name="bildUrl"
 				class="form-control"
 				placeholder="/img/..."
-				value={form?.bildUrl ?? ''}
+				value={form?.bildUrl ?? s.bildUrl ?? ''}
 			/>
 		</div>
 
@@ -283,19 +287,31 @@
 				name="websiteUrl"
 				class="form-control"
 				placeholder="https://..."
-				value={form?.websiteUrl ?? ''}
+				value={form?.websiteUrl ?? s.websiteUrl ?? ''}
 			/>
 		</div>
 
 		<div class="mb-4 d-flex gap-4">
 			<div class="form-check">
-				<input type="checkbox" id="wlan" name="wlan" class="form-check-input" />
+				<input
+					type="checkbox"
+					id="wlan"
+					name="wlan"
+					class="form-check-input"
+					checked={s.wlan}
+				/>
 				<label for="wlan" class="form-check-label">
 					<i class="bi bi-wifi me-1"></i>WLAN vorhanden
 				</label>
 			</div>
 			<div class="form-check">
-				<input type="checkbox" id="steckdosen" name="steckdosen" class="form-check-input" />
+				<input
+					type="checkbox"
+					id="steckdosen"
+					name="steckdosen"
+					class="form-check-input"
+					checked={s.steckdosen}
+				/>
 				<label for="steckdosen" class="form-check-label">
 					<i class="bi bi-plug me-1"></i>Steckdosen vorhanden
 				</label>
@@ -304,9 +320,9 @@
 
 		<div class="d-flex gap-2">
 			<button type="submit" class="btn btn-primary btn-submit">
-				<i class="bi bi-plus-circle me-1"></i>Spot eintragen
+				<i class="bi bi-save me-1"></i>Änderungen speichern
 			</button>
-			<a href="/spots" class="btn btn-outline-secondary">Abbrechen</a>
+			<a href="/spots/{s._id}" class="btn btn-outline-secondary">Abbrechen</a>
 		</div>
 	</form>
 </div>
@@ -408,7 +424,7 @@
 		align-items: center;
 	}
 
-	/* ── Button Press-Feedback (Emil: Buttons müssen reaktiv sein) */
+	/* ── Button Press-Feedback ─────────────────────────────────── */
 	.btn-submit:active {
 		transform: scale(0.97);
 	}

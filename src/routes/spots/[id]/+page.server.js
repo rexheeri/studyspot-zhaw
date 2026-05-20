@@ -1,13 +1,16 @@
-// src/routes/spots/[id]/+page.server.js
-// ERGÄNZE die bestehende Datei um die deleteSpot Action am Ende.
-// Die load-Funktion (getSpot + getReviews) bleibt unverändert.
-
 import { fail, redirect, error } from '@sveltejs/kit';
 import { getDb } from '$lib/db.js';
 import { ObjectId } from 'mongodb';
 import { ADMIN_EMAIL } from '$env/static/private';
 
-// --- Deine bestehende load-Funktion bleibt hier ---
+const STATUS_WERT = { ruhig: 1, mittel: 2, voll: 3 };
+
+function wertZuStatus(wert) {
+  if (wert <= 1.5) return 'ruhig';
+  if (wert <= 2.5) return 'mittel';
+  return 'voll';
+}
+
 export async function load({ params, locals }) {
   const db = await getDb();
 
@@ -20,22 +23,36 @@ export async function load({ params, locals }) {
     .sort({ erstelltAm: -1 })
     .toArray();
 
-  // Durchschnittsbewertung berechnen
   const avgRating =
     reviews.length > 0
       ? Math.round((reviews.reduce((sum, r) => sum + r.sterne, 0) / reviews.length) * 10) / 10
       : null;
+
+  const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+  const checkins = await db
+    .collection('checkins')
+    .find({ spotId: new ObjectId(params.id), erstelltAm: { $gte: twoHoursAgo } })
+    .toArray();
+
+  let currentStatus = null;
+  if (checkins.length > 0) {
+    const summe = checkins.reduce((acc, c) => acc + (STATUS_WERT[c.status] ?? 2), 0);
+    currentStatus = {
+      status: wertZuStatus(summe / checkins.length),
+      count: checkins.length
+    };
+  }
 
   return {
     spot: { ...spot, _id: spot._id.toString() },
     reviews: reviews.map((r) => ({ ...r, _id: r._id.toString(), spotId: r.spotId.toString() })),
     avgRating,
     user: locals.user,
-    isAdmin: locals.user?.email === ADMIN_EMAIL
+    isAdmin: locals.user?.email === ADMIN_EMAIL,
+    currentStatus
   };
 }
 
-// --- Review abgeben (bestehende Action, falls vorhanden) ---
 export const actions = {
   addReview: async ({ request, params, locals }) => {
     if (!locals.user) {
@@ -53,7 +70,7 @@ export const actions = {
     const db = await getDb();
     await db.collection('reviews').insertOne({
       spotId: new ObjectId(params.id),
-      autorName: locals.user.email.split('@')[0], // z.B. "vorname.nachname"
+      autorName: locals.user.email.split('@')[0],
       autorEmail: locals.user.email,
       sterne,
       kommentar: kommentar || '',
@@ -63,22 +80,58 @@ export const actions = {
     return { success: true };
   },
 
-  // --- NUR ADMIN: Spot löschen ---
+  setStatus: async ({ request, params, locals }) => {
+    if (!locals.user) {
+      return fail(401, { error: 'Einloggen erforderlich.' });
+    }
+
+    const data = await request.formData();
+    const status = data.get('status')?.toString();
+
+    if (!['ruhig', 'mittel', 'voll'].includes(status)) {
+      return fail(400, { error: 'Ungültiger Status.' });
+    }
+
+    const isAdmin = locals.user.email === ADMIN_EMAIL;
+    const db = await getDb();
+
+    if (!isAdmin) {
+      const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+      const recentCheckin = await db.collection('checkins').findOne({
+        spotId: new ObjectId(params.id),
+        userId: locals.user.id,
+        erstelltAm: { $gte: fifteenMinutesAgo }
+      });
+
+      if (recentCheckin) {
+        return fail(429, {
+          rateLimitError: 'Du hast bereits einen Status gemeldet. Warte 15 Minuten.'
+        });
+      }
+    }
+
+    await db.collection('checkins').insertOne({
+      spotId: new ObjectId(params.id),
+      userId: locals.user.id,
+      status,
+      erstelltAm: new Date()
+    });
+
+    return { statusSuccess: true };
+  },
+
   deleteSpot: async ({ params, locals }) => {
-    // Doppelte Absicherung: kein Login → 401
     if (!locals.user) {
       return fail(401, { error: 'Nicht autorisiert.' });
     }
-
-    // Kein Admin → 403
     if (locals.user.email !== ADMIN_EMAIL) {
       return fail(403, { error: 'Nur Admins dürfen Spots löschen.' });
     }
 
     const db = await getDb();
     await db.collection('spots').deleteOne({ _id: new ObjectId(params.id) });
-    // Zugehörige Reviews ebenfalls löschen
     await db.collection('reviews').deleteMany({ spotId: new ObjectId(params.id) });
+    await db.collection('checkins').deleteMany({ spotId: new ObjectId(params.id) });
 
     redirect(303, '/spots');
   }

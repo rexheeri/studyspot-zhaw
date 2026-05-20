@@ -8,10 +8,15 @@
   let user = $derived(data.user);
 </script>
 
-<!-- Bootstrap CSS – falls noch nicht vorhanden -->
+<!-- Bootstrap CSS -->
 <link
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+/>
+<!-- Bootstrap Icons -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
 />
 
 <nav class="navbar navbar-dark bg-primary">
