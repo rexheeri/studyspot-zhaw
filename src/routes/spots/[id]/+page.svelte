@@ -196,4 +196,16 @@
 	<a href="/spots" class="btn btn-outline-secondary">
 		<i class="bi bi-arrow-left me-1"></i>Zurück zur Übersicht
 	</a>
+
+	{#if data.isAdmin}
+		<div class="mt-4 pt-3 border-top">
+			<p class="text-muted small mb-2">🔐 Admin-Bereich</p>
+			<form method="POST" action="?/deleteSpot" use:enhance
+				onsubmit={(e) => {
+					if (!confirm(`Spot «${data.spot.name}» wirklich löschen?`)) e.preventDefault();
+				}}>
+				<button type="submit" class="btn btn-danger btn-sm">🗑️ Spot löschen</button>
+			</form>
+		</div>
+	{/if}
 </div>

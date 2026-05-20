@@ -1,39 +1,39 @@
+<!-- src/routes/+layout.svelte -->
+<!-- ERSETZE die bestehende Navbar mit dieser Version. Den Rest deines Layouts (Bootstrap-Import etc.) beibehalten. -->
+
 <script>
-	import favicon from '$lib/assets/favicon.svg';
-	import 'bootstrap/dist/css/bootstrap.min.css';
-	import 'bootstrap-icons/font/bootstrap-icons.css';
-let { children } = $props();
+  import { enhance } from '$app/forms';
+
+  let { data, children } = $props();
+  let user = $derived(data.user);
 </script>
 
-<svelte:head>
-	<link rel="icon" href={favicon} />
-</svelte:head>
+<!-- Bootstrap CSS – falls noch nicht vorhanden -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+/>
 
-<nav class="navbar navbar-expand-md navbar-dark bg-primary">
-	<div class="container">
-		<a class="navbar-brand fw-bold" href="/">StudySpot ZHAW</a>
-		<button
-			class="navbar-toggler"
-			type="button"
-			data-bs-toggle="collapse"
-			data-bs-target="#mainNav"
-			aria-controls="mainNav"
-			aria-expanded="false"
-			aria-label="Navigation umschalten"
-		>
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="mainNav">
-			<ul class="navbar-nav ms-auto mb-2 mb-md-0">
-				<li class="nav-item">
-					<a class="nav-link" href="/spots">Spots</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="/spots/create">Spot eintragen</a>
-				</li>
-			</ul>
-		</div>
-	</div>
+<nav class="navbar navbar-dark bg-primary">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">StudySpot ZHAW</a>
+    <div class="d-flex align-items-center gap-3">
+      <a class="nav-link text-white" href="/spots">Spots</a>
+
+      {#if user}
+        <!-- Eingeloggt: Spot eintragen + Logout -->
+        <a class="nav-link text-white" href="/spots/create">Spot eintragen</a>
+        <form method="POST" action="/login?/logout" use:enhance class="mb-0">
+          <button type="submit" class="btn btn-outline-light btn-sm">
+            Abmelden
+          </button>
+        </form>
+      {:else}
+        <!-- Nicht eingeloggt: Login-Link -->
+        <a class="btn btn-outline-light btn-sm" href="/login">Anmelden</a>
+      {/if}
+    </div>
+  </div>
 </nav>
 
 {@render children()}

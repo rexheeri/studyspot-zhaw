@@ -1,42 +1,48 @@
-import { getDb } from '$lib/db.js';
+// src/routes/spots/create/+page.server.js
+// ERGÄNZE am Anfang der bestehenden Datei die Auth-Guard-Logik.
+// Der Rest (createSpot Action) bleibt unverändert.
+
 import { fail, redirect } from '@sveltejs/kit';
+import { getDb } from '$lib/db.js';
+
+export async function load({ locals }) {
+  // AUTH GUARD: Nicht eingeloggt → zum Login
+  if (!locals.user) {
+    redirect(303, '/login');
+  }
+  return {};
+}
 
 export const actions = {
-	default: async ({ request }) => {
-		const form = await request.formData();
-		const name = form.get('name')?.toString().trim();
-		const strasse = form.get('strasse')?.toString().trim();
-		const plz = form.get('plz')?.toString().trim();
-		const ort = form.get('ort')?.toString().trim();
-		const beschreibung = form.get('beschreibung')?.toString().trim() ?? '';
-		const wlan = form.get('wlan') === 'on';
-		const laerm = form.get('laerm')?.toString() ?? 'ruhig';
-		const steckdosen = form.get('steckdosen') === 'on';
-		const bildUrl = form.get('bildUrl')?.toString().trim() ?? '';
+  createSpot: async ({ request, locals }) => {
+    // Nochmals prüfen (Server-Side, sicher)
+    if (!locals.user) {
+      return fail(401, { error: 'Du musst eingeloggt sein, um einen Spot hinzuzufügen.' });
+    }
 
-		if (!name || !strasse || !plz || !ort) {
-			return fail(400, { error: 'Name, Strasse, PLZ und Ort sind Pflichtfelder.', name, strasse, plz, ort });
-		}
+    const data = await request.formData();
 
-		const adresse = `${strasse}, ${plz} ${ort}`;
+    const spot = {
+      name: data.get('name')?.toString().trim(),
+      strasse: data.get('strasse')?.toString().trim(),
+      plz: data.get('plz')?.toString().trim(),
+      ort: data.get('ort')?.toString().trim(),
+      beschreibung: data.get('beschreibung')?.toString().trim() || '',
+      laerm: data.get('laerm')?.toString() || 'ruhig',
+      bildUrl: data.get('bildUrl')?.toString().trim() || '',
+      wlan: data.get('wlan') === 'on',
+      steckdosen: data.get('steckdosen') === 'on',
+      erstelltVon: locals.user.email, // Wer hat den Spot erstellt
+      erstelltAm: new Date()
+    };
 
-		try {
-			const db = await getDb();
-			await db.collection('spots').insertOne({
-				name,
-				adresse,
-				beschreibung,
-				wlan,
-				laerm,
-				steckdosen,
-				bildUrl,
-				erstelltAm: new Date()
-			});
-		} catch (e) {
-			console.error('Fehler beim Speichern des Spots:', e);
-			return fail(500, { error: 'Spot konnte nicht gespeichert werden.' });
-		}
+    if (!spot.name || !spot.strasse || !spot.plz || !spot.ort) {
+      return fail(400, { error: 'Bitte alle Pflichtfelder ausfüllen.' });
+    }
 
-		redirect(303, '/spots');
-	}
+    const db = await getDb();
+    await db.collection('spots').insertOne(spot);
+
+    redirect(303, '/spots');
+  }
 };

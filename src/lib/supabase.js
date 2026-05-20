@@ -1,0 +1,20 @@
+// src/lib/supabase.js
+// Supabase Server-Client – wird in hooks.server.js und Page-Server-Dateien genutzt
+
+import { createServerClient } from '@supabase/ssr';
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
+
+export function createSupabaseServerClient(cookies) {
+  return createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
+    cookies: {
+      getAll() {
+        return cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value, options }) => {
+          cookies.set(name, value, { ...options, path: '/' });
+        });
+      }
+    }
+  });
+}
