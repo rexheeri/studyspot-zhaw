@@ -311,13 +311,4 @@ Die Screenshots zeigen den Zustand der App zum Zeitpunkt des Usability-Tests und
 
 ---
 
-### Crazy-8s Wireframes – W9 Sketch-Phase
-
-![Crazy-8s Skizzen – Blatt 1](docs/methodik/crazy-8s-1.png)
-![Crazy-8s Skizzen – Blatt 2](docs/methodik/crazy-8s-2.png)
-
-*16 Handskizzen aus der Crazy-8s-Übung in W9. Basis für die Entscheidung in W10 (Kap. 3.3).*
-
----
-
-*Weitere Artefakte: Persona-Profile, User Journey Map, ER-Diagramm.*
+*Weitere Artefakte: Persona-Profile (Kap. 3.1), User Journey Map (Kap. 3.1), Crazy-8s Wireframes (Kap. 3.2), ER-Diagramm (Kap. 3.4.2).*
