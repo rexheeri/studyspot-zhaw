@@ -135,18 +135,9 @@ Das Datenmodell besteht aus drei Collections in MongoDB sowie der Supabase-verwa
 erDiagram
     SPOTS ||--o{ REVIEWS : "hat"
     SPOTS ||--o{ CHECKINS : "hat"
-    USERS ||--o{ REVIEWS : "schreibt"
-    USERS ||--o{ CHECKINS : "erstellt"
+    REVIEWS }o--|| USERS : "geschrieben von"
+    CHECKINS }o--|| USERS : "erstellt von"
 
-    REVIEWS {
-        ObjectId _id PK
-        ObjectId spotId FK
-        string autorName
-        string autorEmail
-        int sterne
-        string kommentar
-        date erstelltAm
-    }
     SPOTS {
         ObjectId _id PK
         string name
@@ -158,6 +149,15 @@ erDiagram
         string websiteUrl
         float lat
         float lng
+        date erstelltAm
+    }
+    REVIEWS {
+        ObjectId _id PK
+        ObjectId spotId FK
+        string autorName
+        string autorEmail
+        int sterne
+        string kommentar
         date erstelltAm
     }
     CHECKINS {
