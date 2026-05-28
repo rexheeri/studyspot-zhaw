@@ -133,16 +133,11 @@ Das Datenmodell besteht aus drei Collections in MongoDB sowie der Supabase-verwa
 
 ```mermaid
 erDiagram
-    USERS ||--o{ REVIEWS : "schreibt"
     SPOTS ||--o{ REVIEWS : "hat"
     SPOTS ||--o{ CHECKINS : "hat"
+    USERS ||--o{ REVIEWS : "schreibt"
     USERS ||--o{ CHECKINS : "erstellt"
 
-    USERS {
-        uuid id PK
-        string email
-        date created_at
-    }
     REVIEWS {
         ObjectId _id PK
         ObjectId spotId FK
@@ -171,6 +166,11 @@ erDiagram
         string userId
         string status
         date erstelltAm
+    }
+    USERS {
+        uuid id PK
+        string email
+        date created_at
     }
 ```
 
