@@ -133,6 +133,25 @@ Das Datenmodell besteht aus drei Collections in MongoDB sowie der Supabase-verwa
 
 ```mermaid
 erDiagram
+    USERS ||--o{ REVIEWS : "schreibt"
+    SPOTS ||--o{ REVIEWS : "hat"
+    SPOTS ||--o{ CHECKINS : "hat"
+    USERS ||--o{ CHECKINS : "erstellt"
+
+    USERS {
+        uuid id PK
+        string email
+        date created_at
+    }
+    REVIEWS {
+        ObjectId _id PK
+        ObjectId spotId FK
+        string autorName
+        string autorEmail
+        int sterne
+        string kommentar
+        date erstelltAm
+    }
     SPOTS {
         ObjectId _id PK
         string name
@@ -146,15 +165,6 @@ erDiagram
         float lng
         date erstelltAm
     }
-    REVIEWS {
-        ObjectId _id PK
-        ObjectId spotId FK
-        string autorName
-        string autorEmail
-        int sterne
-        string kommentar
-        date erstelltAm
-    }
     CHECKINS {
         ObjectId _id PK
         ObjectId spotId FK
@@ -162,15 +172,6 @@ erDiagram
         string status
         date erstelltAm
     }
-    USERS {
-        uuid id PK
-        string email
-        date created_at
-    }
-    SPOTS ||--o{ REVIEWS : "hat"
-    SPOTS ||--o{ CHECKINS : "hat"
-    USERS ||--o{ REVIEWS : "schreibt"
-    USERS ||--o{ CHECKINS : "erstellt"
 ```
 
 Die Collection `spots` enthält alle Lernorte mit Name, Adresse, Beschreibung, WLAN, Lärmpegel, Steckdosen, Bild-URL, Meetingräume, Drucker und Reservierungs-URL. Die Collection `reviews` speichert Bewertungen mit Referenz auf einen Spot, Sterne (1 bis 5), Kommentar und Autor. Die Collection `checkins` nimmt zeitlich begrenzte Statusmeldungen pro Spot auf und ist Grundlage für den Live-Belegungsstatus.
