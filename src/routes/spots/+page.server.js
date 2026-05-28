@@ -6,7 +6,7 @@ export async function load() {
 		const db = await getDb();
 		const spots = await db.collection('spots').find({}).sort({ erstelltAm: -1 }).toArray();
 
-		const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+		const twoHoursAgo = new Date(Date.now() - 60 * 60 * 1000);
 		const checkinAgg = await db.collection('checkins').aggregate([
 			{ $match: { erstelltAm: { $gte: twoHoursAgo } } },
 			{ $addFields: { wert: { $switch: { branches: [

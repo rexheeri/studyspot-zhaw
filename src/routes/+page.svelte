@@ -35,9 +35,9 @@
 		<div class="col-md-4">
 			<div class="card h-100 text-center shadow-sm">
 				<div class="card-body p-4">
-					<i class="bi bi-plug display-4 text-primary mb-3 d-block"></i>
-					<h5 class="card-title">Steckdosen</h5>
-					<p class="card-text text-muted">Kein leerer Akku mehr – finde Lernorte mit ausreichend Steckdosen für Laptop und Handy.</p>
+					<i class="bi bi-people-fill display-4 text-primary mb-3 d-block"></i>
+					<h5 class="card-title">Live-Belegung</h5>
+					<p class="card-text text-muted">Sieh in Echtzeit, wie voll ein Spot gerade ist – gemeldet von der Community, aktuell bis auf 15 Minuten genau.</p>
 				</div>
 			</div>
 		</div>

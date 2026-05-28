@@ -18,11 +18,11 @@ export const actions = {
     const email = data.get('email')?.toString().trim().toLowerCase();
     const password = data.get('password')?.toString();
 
-    // ZHAW-Mail-Pflicht
-    if (!email?.endsWith('@students.zhaw.ch')) {
+    // ZHAW-Mail-Pflicht (@students.zhaw.ch und @zhaw.ch)
+    if (!email?.endsWith('@zhaw.ch')) {
       return fail(400, {
         action: 'register',
-        error: 'Nur ZHAW-Studierende mit einer @students.zhaw.ch Adresse dürfen sich registrieren.'
+        error: 'Nur Personen mit einer ZHAW-E-Mail-Adresse (@zhaw.ch) dürfen sich registrieren.'
       });
     }
 
@@ -33,7 +33,13 @@ export const actions = {
       });
     }
 
-    const { error } = await locals.supabase.auth.signUp({ email, password });
+    const { error } = await locals.supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: 'https://studyspot-zhaw.netlify.app/auth/callback'
+      }
+    });
 
     if (error) {
       return fail(400, { action: 'register', error: error.message });

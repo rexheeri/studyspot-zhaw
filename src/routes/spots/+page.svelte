@@ -5,11 +5,22 @@
 
 	let { data } = $props();
 
-	const laermBadge = { ruhig: 'success', mittel: 'warning', laut: 'danger' };
+	const laermBadge = { ruhig: 'success', mittel: 'warning text-dark', laut: 'danger' };
 	const statusBadge = { ruhig: 'success', mittel: 'warning', voll: 'danger' };
 	const statusIcon = { ruhig: '🟢', mittel: '🟡', voll: '🔴' };
+	const statusLabel = { ruhig: 'Ruhig', mittel: 'Mittel', voll: 'Voll' };
 
+	let belegungFilter = $state('alle');
 	let mapDiv = $state(null);
+
+	const gefilterteSpots = $derived(
+		belegungFilter === 'alle'
+			? data.spots
+			: data.spots.filter((s) => {
+					const status = s.currentStatus ?? 'ruhig';
+					return status === belegungFilter;
+				})
+	);
 
 	function spotAdresse(spot) {
 		return (
@@ -117,65 +128,97 @@
 			<a href="/spots/create" class="alert-link ms-1">Ersten Spot eintragen</a>
 		</div>
 	{:else}
+		<!-- Belegungsfilter -->
+		<div class="d-flex align-items-center gap-2 mb-4 flex-wrap">
+			<span class="text-muted small fw-medium me-1">Belegung:</span>
+			<div class="btn-group" role="group" aria-label="Nach Belegung filtern">
+				{#each [['alle', '– Alle'], ['ruhig', '🟢 Ruhig'], ['mittel', '🟡 Mittel'], ['voll', '🔴 Voll']] as [val, label]}
+					<button
+						type="button"
+						class="btn btn-sm {belegungFilter === val
+							? 'btn-primary'
+							: 'btn-outline-secondary'}"
+						onclick={() => (belegungFilter = val)}
+					>
+						{label}
+					</button>
+				{/each}
+			</div>
+			{#if belegungFilter !== 'alle'}
+				<span class="text-muted small">
+					{gefilterteSpots.length}
+					{gefilterteSpots.length === 1 ? 'Spot' : 'Spots'} gefunden
+				</span>
+			{/if}
+		</div>
+
 		<!-- Spot-Karten -->
 		<div class="row g-4 mb-5">
-			{#each data.spots as spot (spot._id)}
-				<div class="col-md-4">
-					<div class="card h-100 shadow-sm">
-						{#if spot.bildUrl}
-							<img
-								src={spot.bildUrl}
-								alt={spot.name}
-								style="width:100%; height:180px; object-fit:cover; border-radius:4px 4px 0 0;"
-							/>
-						{/if}
-						<div class="card-body d-flex flex-column">
-							<div class="d-flex justify-content-between align-items-start mb-1">
-								<h5 class="card-title mb-0">{spot.name}</h5>
-								{#if spot.currentStatus}
-									<span class="badge bg-{statusBadge[spot.currentStatus]} ms-2">
-										{statusIcon[spot.currentStatus]} {spot.currentStatus}
+			{#if gefilterteSpots.length === 0}
+				<div class="col-12">
+					<p class="text-muted">Keine Spots mit diesem Belegungsstatus.</p>
+				</div>
+			{:else}
+				{#each gefilterteSpots as spot (spot._id)}
+					<div class="col-md-4">
+						<div class="card h-100 shadow-sm">
+							{#if spot.bildUrl}
+								<img
+									src={spot.bildUrl}
+									alt={spot.name}
+									style="width:100%; height:180px; object-fit:cover; border-radius:4px 4px 0 0;"
+								/>
+							{/if}
+							<div class="card-body d-flex flex-column">
+								<div class="d-flex justify-content-between align-items-start mb-1">
+									<h5 class="card-title mb-0">{spot.name}</h5>
+									{#if spot.currentStatus}
+										<span class="badge bg-{statusBadge[spot.currentStatus]} ms-2">
+											{statusIcon[spot.currentStatus]} {statusLabel[spot.currentStatus]}
+										</span>
+									{:else}
+										<span class="badge bg-secondary ms-2" style="opacity:0.6;">⚪ Unbekannt</span>
+									{/if}
+								</div>
+								<p class="card-text text-muted mb-2">
+									<i class="bi bi-geo-alt me-1"></i>{spotAdresse(spot)}
+								</p>
+
+								<div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+									<span class="badge bg-{laermBadge[spot.laerm] ?? 'secondary'}">
+										<i
+											class="bi bi-volume-{spot.laerm === 'ruhig'
+												? 'mute'
+												: spot.laerm === 'mittel'
+													? 'down'
+													: 'up'} me-1"
+										></i>
+										{spot.laerm}
 									</span>
-								{/if}
-							</div>
-							<p class="card-text text-muted mb-2">
-								<i class="bi bi-geo-alt me-1"></i>{spotAdresse(spot)}
-							</p>
+									{#if spot.wlan}
+										<span class="badge bg-primary"><i class="bi bi-wifi me-1"></i>WLAN</span>
+									{:else}
+										<span class="badge bg-secondary"
+											><i class="bi bi-wifi-off me-1"></i>Kein WLAN</span
+										>
+									{/if}
+									{#if spot.steckdosen}
+										<span class="badge bg-primary"><i class="bi bi-plug me-1"></i>Steckdosen</span>
+									{:else}
+										<span class="badge bg-secondary"
+											><i class="bi bi-plug me-1"></i>Keine Steckdosen</span
+										>
+									{/if}
+								</div>
 
-							<div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
-								<span class="badge bg-{laermBadge[spot.laerm] ?? 'secondary'}">
-									<i
-										class="bi bi-volume-{spot.laerm === 'ruhig'
-											? 'mute'
-											: spot.laerm === 'mittel'
-												? 'down'
-												: 'up'} me-1"
-									></i>
-									{spot.laerm}
-								</span>
-								{#if spot.wlan}
-									<span class="badge bg-primary"><i class="bi bi-wifi me-1"></i>WLAN</span>
-								{:else}
-									<span class="badge bg-secondary"
-										><i class="bi bi-wifi-off me-1"></i>Kein WLAN</span
-									>
-								{/if}
-								{#if spot.steckdosen}
-									<span class="badge bg-primary"><i class="bi bi-plug me-1"></i>Steckdosen</span>
-								{:else}
-									<span class="badge bg-secondary"
-										><i class="bi bi-plug me-1"></i>Keine Steckdosen</span
-									>
-								{/if}
+								<a href="/spots/{spot._id}" class="btn btn-outline-primary mt-auto">
+									Details <i class="bi bi-arrow-right ms-1"></i>
+								</a>
 							</div>
-
-							<a href="/spots/{spot._id}" class="btn btn-outline-primary mt-auto">
-								Details <i class="bi bi-arrow-right ms-1"></i>
-							</a>
 						</div>
 					</div>
-				</div>
-			{/each}
+				{/each}
+			{/if}
 		</div>
 
 		<!-- Übersichtskarte -->
