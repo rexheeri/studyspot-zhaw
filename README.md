@@ -141,14 +141,19 @@ erDiagram
     SPOTS {
         ObjectId _id PK
         string name
+        string strasse
+        string plz
+        string ort
         string adresse
-        boolean wlan
+        string beschreibung
         string laerm
+        boolean wlan
         boolean steckdosen
         string bildUrl
         string websiteUrl
         float lat
         float lng
+        string erstelltVon
         date erstelltAm
     }
     REVIEWS {
@@ -174,7 +179,7 @@ erDiagram
     }
 ```
 
-Die Collection `spots` enthält alle Lernorte mit Name, Adresse, Beschreibung, WLAN, Lärmpegel, Steckdosen, Bild-URL, Meetingräume, Drucker und Reservierungs-URL. Die Collection `reviews` speichert Bewertungen mit Referenz auf einen Spot, Sterne (1 bis 5), Kommentar und Autor. Die Collection `checkins` nimmt zeitlich begrenzte Statusmeldungen pro Spot auf und ist Grundlage für den Live-Belegungsstatus.
+Die Collection `spots` enthält alle Lernorte mit den Feldern: name, strasse, plz, ort, adresse (zusammengesetzt), beschreibung, laerm (ruhig|mittel|laut), wlan, steckdosen, bildUrl, websiteUrl, lat, lng, erstelltVon und erstelltAm. Die Collection `reviews` speichert Bewertungen mit Referenz auf einen Spot, Sterne (1 bis 5), Kommentar und Autor. Die Collection `checkins` nimmt zeitlich begrenzte Statusmeldungen pro Spot auf und ist Grundlage für den Live-Belegungsstatus.
 
 Die App nutzt SvelteKit File-Based Routing mit `+page.svelte` für die UI und `+page.server.js` für alle Datenbankzugriffe. Datenbankoperationen laufen ausschliesslich serverseitig; der MongoDB-URI wird nie an den Client übertragen. Die Verbindung wird in `src/lib/db.js` zentral verwaltet, mit dem nativen MongoDB Driver statt Mongoose. Diese Entscheidung wurde bewusst getroffen, um unnötige Abstraktion zu vermeiden und die Datenbankebene direkt zu halten.
 
@@ -285,7 +290,34 @@ Zur Datenbank-Sicherheit: Atlas Network Access ist bewusst auf `0.0.0.0/0` geset
 
 ## 6. KI-Deklaration
 
-*Wird laufend ergänzt.*
+KI-Tools (primär Claude via Anthropic Cowork & Claude Code) wurden während des gesamten Projekts als Arbeits- und Lernhilfe eingesetzt. Der Einsatz lässt sich in 
+drei Bereiche gliedern:
+
+**Projektorganisation und Planung**  
+Claude diente als strukturgebender Assistent: Wochenplan besprechen, 
+Priorisierungen hinterfragen, Fortschritt tracken. Die Entscheidungen 
+(welche Extensions, welche Reihenfolge, wie stark abweichen vom Plan) 
+habe ich selbst getroffen, Claude hat sie kritisch begleitet und 
+blinde Flecken aufgezeigt.
+
+**Code-Entwicklung**  
+Beim Schreiben von Code habe ich KI als erfahrenen Reviewer eingesetzt: 
+Fehlermeldungen erklären lassen, Lösungsansätze diskutieren, bestehenden 
+Code auf Probleme prüfen. Eigenständig umgesetzte Teile (z. B. 
+MongoDB-Anbindung, SvelteKit-Routing, Supabase-Auth-Flow) wurden danach 
+mit KI-Unterstützung bereinigt und verbessert, aber nicht von Grund auf 
+generiert.
+
+**Dokumentation**  
+Bei der README hat KI geholfen, Formulierungen zu schärfen und die 
+Struktur einzuhalten. Die inhaltlichen Aussagen wie Personas, Beobachtungen 
+aus dem Usability-Test und Designentscheide stammen aus eigener Arbeit 
+und Reflexion.
+
+KI wurde nicht eingesetzt, um fertige Deliverables abzuliefern, sondern 
+um schneller zu lernen und Fehler früher zu erkennen. Sämtliche 
+Artefakte (Sketches, Persona, User Journey Map, Figma-Mockup, Usability-
+Aufgaben) wurden ohne KI-Generierung erstellt.
 
 ## 7. Anhang
 
