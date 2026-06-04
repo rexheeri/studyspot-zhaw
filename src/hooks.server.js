@@ -1,17 +1,17 @@
 // src/hooks.server.js
-// Läuft bei JEDEM Request – liest Session aus Cookie und stellt sie allen Pages zur Verfügung
+// Läuft bei JEDEM Request – validiert den User serverseitig und stellt ihn allen Pages zur Verfügung
 
 import { createSupabaseServerClient } from '$lib/supabase';
 
 export async function handle({ event, resolve }) {
   event.locals.supabase = createSupabaseServerClient(event.cookies);
 
+  // getUser() validiert das JWT gegen den Supabase-Auth-Server (sicherer als getSession())
   const {
-    data: { session }
-  } = await event.locals.supabase.auth.getSession();
+    data: { user }
+  } = await event.locals.supabase.auth.getUser();
 
-  event.locals.session = session;
-  event.locals.user = session?.user ?? null;
+  event.locals.user = user ?? null;
 
   return resolve(event, {
     filterSerializedResponseHeaders(name) {

@@ -200,7 +200,7 @@ Ziele der Prüfung:
 
 Vorgehen: Moderierter Usability-Test, on-site (Kleinklassen-Übung W13, 20. Mai 2026). Die Testpersonen erhielten ein ausgedrucktes Aufgabenblatt mit je einer Aufgabe pro Abschnitt. Der Testleiter beobachtete still und griff erst nach ca. 30 Sekunden Inaktivität neutral ein («Was denkst du, was als nächstes zu tun wäre?»). Nach allen Aufgaben folgte eine kurze Nachbesprechung mit 5 offenen Fragen zu UX, Entscheidungshilfe und Nutzungsbereitschaft.
 
-Stichprobe: 2 ZHAW-Studierende (Kommilitonen, Modul Prototyping), Desktop-Ansicht, Chrome-Browser.
+Stichprobe: 2 ZHAW-Studierende (Kommilitonen, Modul Prototyping), Desktop-Ansicht, Chrome-Browser. Die Stichprobengrösse von 2 Testpersonen war durch das Modul vorgegeben; der Test ist entsprechend qualitativ ausgelegt (Tiefe statt statistischer Repräsentativität).
 
 **Aufgaben/Szenarien:**
 
@@ -280,7 +280,7 @@ Am unteren Ende der `/spots`-Seite zeigt eine interaktive Mapbox-GL-JS-Karte all
 
 ## 5. Projektorganisation
 
-Die Projektarbeit wird über GitHub Issues entlang des Wochenplans strukturiert. Jedes Feature und jedes Methodik-Artefakt ist als eigenes Issue erfasst und mit einem Label versehen (`MVP`, `extension`, `methodik`, `deployment`, `validate`). Commits referenzieren die zugehörigen Issues per `closes #X`, sodass der Fortschritt direkt im Repo nachvollziehbar ist.
+Die Projektarbeit wird über GitHub Issues entlang des Wochenplans strukturiert. Features und Methodik-Artefakte sind als gelabelte GitHub Issues erfasst (`MVP`, `extension`, `methodik`, `deployment`, `validate`) und entlang des Wochenplans abgearbeitet.
 
 Commit-Messages folgen dem Schema Conventional Commits (z.B. `feat:`, `fix:`, `chore:`, `docs:`).
 

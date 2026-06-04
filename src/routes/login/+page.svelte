@@ -17,7 +17,7 @@
       <div class="card shadow-sm">
         <div class="card-body p-4">
           <h1 class="h4 mb-1 fw-bold">StudySpot ZHAW</h1>
-          <p class="text-muted small mb-4">Nur für ZHAW-Studierende (@students.zhaw.ch)</p>
+          <p class="text-muted small mb-4">Nur für ZHAW-Angehörige (@zhaw.ch)</p>
 
           <!-- Tabs -->
           <ul class="nav nav-tabs mb-4">

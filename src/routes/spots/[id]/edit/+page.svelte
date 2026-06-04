@@ -89,7 +89,8 @@
 		await zeigeKarte(parseFloat(v.lat), parseFloat(v.lon));
 	}
 
-	function dropdownTransition(node) {
+	// eslint-disable-next-line no-unused-vars
+	function dropdownTransition(_node) {
 		return {
 			duration: 150,
 			css: (t) => {
@@ -214,7 +215,7 @@
 						role="listbox"
 						transition:dropdownTransition
 					>
-						{#each vorschlaege as v, i}
+						{#each vorschlaege as v, i (v.place_id ?? i)}
 							<button
 								type="button"
 								role="option"
