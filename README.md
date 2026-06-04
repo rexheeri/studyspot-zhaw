@@ -314,11 +314,6 @@ Struktur einzuhalten. Die inhaltlichen Aussagen wie Personas, Beobachtungen
 aus dem Usability-Test und Designentscheide stammen aus eigener Arbeit 
 und Reflexion.
 
-KI wurde nicht eingesetzt, um fertige Deliverables abzuliefern, sondern 
-um schneller zu lernen und Fehler früher zu erkennen. Sämtliche 
-Artefakte (Sketches, Persona, User Journey Map, Figma-Mockup, Usability-
-Aufgaben) wurden ohne KI-Generierung erstellt.
-
 ## 7. Anhang
 
 ### Screenshots – Prototyp Stand 20. Mai 2026 (Usability-Test W13)
