@@ -21,9 +21,10 @@
 
 	const adresse =
 		data.spot.adresse ||
-		[data.spot.strasse, data.spot.plz && data.spot.ort
-			? `${data.spot.plz} ${data.spot.ort}`
-			: data.spot.ort]
+		[
+			data.spot.strasse,
+			data.spot.plz && data.spot.ort ? `${data.spot.plz} ${data.spot.ort}` : data.spot.ort
+		]
 			.filter(Boolean)
 			.join(', ');
 
@@ -69,6 +70,9 @@
 		});
 
 		map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+		map.on('load', () => {
+			map.resize();
+		});
 
 		const el = document.createElement('div');
 		el.innerHTML = `<i class="bi bi-geo-alt-fill" style="color:white;font-size:16px;line-height:1;pointer-events:none;"></i>`;
@@ -91,10 +95,7 @@
 			`<div style="font-weight:600;font-size:0.9rem;color:#212529;">${data.spot.name}</div>`
 		);
 
-		new mapboxgl.Marker({ element: el })
-			.setLngLat([lng, lat])
-			.setPopup(popup)
-			.addTo(map);
+		new mapboxgl.Marker({ element: el }).setLngLat([lng, lat]).setPopup(popup).addTo(map);
 
 		karteInitialisiert = true;
 	}
@@ -113,9 +114,22 @@
 </svelte:head>
 
 <div class="container py-5" style="max-width: 800px;">
-	<a href="/spots" class="d-inline-flex align-items-center gap-1 text-decoration-none text-secondary mb-3">
-		<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-			<path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+	<a
+		href="/spots"
+		class="d-inline-flex align-items-center gap-1 text-decoration-none text-secondary mb-3"
+	>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="18"
+			height="18"
+			fill="currentColor"
+			class="bi bi-arrow-left"
+			viewBox="0 0 16 16"
+		>
+			<path
+				fill-rule="evenodd"
+				d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+			/>
 		</svg>
 		Alle Spots
 	</a>
@@ -195,7 +209,9 @@
 
 		<div
 			bind:this={mapContainer}
-			style="height: 300px; border-radius: 8px; overflow: hidden; {karteAnzeigen ? '' : 'display: none;'}"
+			style="height: 300px; border-radius: 8px; overflow: hidden; {karteAnzeigen
+				? ''
+				: 'display: none;'}"
 			class="d-md-block"
 		></div>
 	</div>
@@ -226,13 +242,24 @@
 	{/if}
 
 	<!-- Bewertungen -->
-	<h2 class="h4 mb-3">Bewertungen</h2>
+	<div class="d-flex align-items-baseline gap-3 mb-3">
+		<h2 class="h4 mb-0">Bewertungen</h2>
+		{#if data.avgRating !== null}
+			<span class="text-warning fs-5" aria-hidden="true">
+				{'★'.repeat(Math.round(data.avgRating))}{'☆'.repeat(5 - Math.round(data.avgRating))}
+			</span>
+			<span class="text-muted small">
+				Ø {data.avgRating} / 5 ({data.reviews.length}
+				{data.reviews.length === 1 ? 'Bewertung' : 'Bewertungen'})
+			</span>
+		{/if}
+	</div>
 
 	{#if data.reviews.length === 0}
 		<p class="text-muted">Noch keine Bewertungen.</p>
 	{:else}
 		<div class="d-flex flex-column gap-3 mb-4">
-			{#each data.reviews as review}
+			{#each data.reviews as review (review._id)}
 				<div class="card shadow-sm">
 					<div class="card-body">
 						<div class="d-flex justify-content-between align-items-center mb-1">
@@ -317,7 +344,9 @@
 	:global(.spot-mapbox-popup .mapboxgl-popup-content) {
 		border-radius: 10px;
 		padding: 12px 16px;
-		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.06);
+		box-shadow:
+			0 4px 20px rgba(0, 0, 0, 0.12),
+			0 1px 4px rgba(0, 0, 0, 0.06);
 		border: 1px solid rgba(0, 0, 0, 0.08);
 	}
 

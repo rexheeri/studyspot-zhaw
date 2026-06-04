@@ -11,15 +11,22 @@
 	const statusLabel = { ruhig: 'Ruhig', mittel: 'Mittel', voll: 'Voll' };
 
 	let belegungFilter = $state('alle');
+	let nurWlan = $state(false);
+	let nurSteckdosen = $state(false);
+	let laermFilter = $state('alle');
 	let mapDiv = $state(null);
 
 	const gefilterteSpots = $derived(
-		belegungFilter === 'alle'
-			? data.spots
-			: data.spots.filter((s) => {
-					const status = s.currentStatus ?? 'ruhig';
-					return status === belegungFilter;
-				})
+		data.spots.filter((s) => {
+			if (belegungFilter !== 'alle') {
+				const status = s.currentStatus ?? 'ruhig';
+				if (status !== belegungFilter) return false;
+			}
+			if (nurWlan && !s.wlan) return false;
+			if (nurSteckdosen && !s.steckdosen) return false;
+			if (laermFilter !== 'alle' && s.laerm !== laermFilter) return false;
+			return true;
+		})
 	);
 
 	function spotAdresse(spot) {
@@ -128,35 +135,80 @@
 			<a href="/spots/create" class="alert-link ms-1">Ersten Spot eintragen</a>
 		</div>
 	{:else}
-		<!-- Belegungsfilter -->
-		<div class="d-flex align-items-center gap-2 mb-4 flex-wrap">
-			<span class="text-muted small fw-medium me-1">Belegung:</span>
-			<div class="btn-group" role="group" aria-label="Nach Belegung filtern">
-				{#each [['alle', '– Alle'], ['ruhig', '🟢 Ruhig'], ['mittel', '🟡 Mittel'], ['voll', '🔴 Voll']] as [val, label]}
-					<button
-						type="button"
-						class="btn btn-sm {belegungFilter === val
-							? 'btn-primary'
-							: 'btn-outline-secondary'}"
-						onclick={() => (belegungFilter = val)}
-					>
-						{label}
-					</button>
-				{/each}
+		<!-- Filterleiste -->
+		<div class="card shadow-sm mb-4 p-3">
+			<div class="d-flex flex-wrap gap-3 align-items-center">
+				<!-- Belegung -->
+				<div class="d-flex align-items-center gap-2 flex-wrap">
+					<span class="text-muted small fw-medium">Belegung:</span>
+					<div class="btn-group" role="group" aria-label="Nach Belegung filtern">
+						{#each [['alle', '– Alle'], ['ruhig', '🟢 Ruhig'], ['mittel', '🟡 Mittel'], ['voll', '🔴 Voll']] as [val, lbl] (val)}
+							<button
+								type="button"
+								class="btn btn-sm {belegungFilter === val
+									? 'btn-primary'
+									: 'btn-outline-secondary'}"
+								onclick={() => (belegungFilter = val)}>{lbl}</button
+							>
+						{/each}
+					</div>
+				</div>
+
+				<!-- Lärmpegel -->
+				<div class="d-flex align-items-center gap-2 flex-wrap">
+					<span class="text-muted small fw-medium">Lärm:</span>
+					<div class="btn-group" role="group" aria-label="Nach Lärmpegel filtern">
+						{#each [['alle', 'Alle'], ['ruhig', '🤫 Ruhig'], ['mittel', '🔉 Mittel'], ['laut', '🔊 Laut']] as [val, lbl] (val)}
+							<button
+								type="button"
+								class="btn btn-sm {laermFilter === val ? 'btn-primary' : 'btn-outline-secondary'}"
+								onclick={() => (laermFilter = val)}>{lbl}</button
+							>
+						{/each}
+					</div>
+				</div>
+
+				<!-- WLAN & Steckdosen -->
+				<div class="d-flex align-items-center gap-3">
+					<div class="form-check mb-0">
+						<input
+							type="checkbox"
+							id="filter-wlan"
+							class="form-check-input"
+							bind:checked={nurWlan}
+						/>
+						<label for="filter-wlan" class="form-check-label small">
+							<i class="bi bi-wifi me-1"></i>Nur mit WLAN
+						</label>
+					</div>
+					<div class="form-check mb-0">
+						<input
+							type="checkbox"
+							id="filter-steckdosen"
+							class="form-check-input"
+							bind:checked={nurSteckdosen}
+						/>
+						<label for="filter-steckdosen" class="form-check-label small">
+							<i class="bi bi-plug me-1"></i>Nur mit Steckdosen
+						</label>
+					</div>
+				</div>
+
+				<!-- Treffer-Zähler -->
+				{#if belegungFilter !== 'alle' || laermFilter !== 'alle' || nurWlan || nurSteckdosen}
+					<span class="text-muted small ms-auto">
+						{gefilterteSpots.length}
+						{gefilterteSpots.length === 1 ? 'Spot' : 'Spots'} gefunden
+					</span>
+				{/if}
 			</div>
-			{#if belegungFilter !== 'alle'}
-				<span class="text-muted small">
-					{gefilterteSpots.length}
-					{gefilterteSpots.length === 1 ? 'Spot' : 'Spots'} gefunden
-				</span>
-			{/if}
 		</div>
 
 		<!-- Spot-Karten -->
 		<div class="row g-4 mb-5">
 			{#if gefilterteSpots.length === 0}
 				<div class="col-12">
-					<p class="text-muted">Keine Spots mit diesem Belegungsstatus.</p>
+					<p class="text-muted">Keine Spots entsprechen den gewählten Filtern.</p>
 				</div>
 			{:else}
 				{#each gefilterteSpots as spot (spot._id)}
@@ -174,7 +226,8 @@
 									<h5 class="card-title mb-0">{spot.name}</h5>
 									{#if spot.currentStatus}
 										<span class="badge bg-{statusBadge[spot.currentStatus]} ms-2">
-											{statusIcon[spot.currentStatus]} {statusLabel[spot.currentStatus]}
+											{statusIcon[spot.currentStatus]}
+											{statusLabel[spot.currentStatus]}
 										</span>
 									{:else}
 										<span class="badge bg-secondary ms-2" style="opacity:0.6;">⚪ Unbekannt</span>
@@ -232,14 +285,18 @@
 		height: 450px;
 		border-radius: 12px;
 		overflow: hidden;
-		box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1), 0 1px 6px rgba(0, 0, 0, 0.06);
+		box-shadow:
+			0 4px 24px rgba(0, 0, 0, 0.1),
+			0 1px 6px rgba(0, 0, 0, 0.06);
 	}
 
 	/* Mapbox Popup Card-Styling */
 	:global(.spot-mapbox-popup .mapboxgl-popup-content) {
 		border-radius: 10px;
 		padding: 14px 16px;
-		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.06);
+		box-shadow:
+			0 4px 20px rgba(0, 0, 0, 0.12),
+			0 1px 4px rgba(0, 0, 0, 0.06);
 		border: 1px solid rgba(0, 0, 0, 0.08);
 	}
 
