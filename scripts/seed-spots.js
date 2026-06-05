@@ -19,6 +19,8 @@ const spots = [
 		laerm: 'ruhig',
 		wlan: true,
 		steckdosen: true,
+		lat: 47.4972726,
+		lng: 8.7293397,
 		bildUrl: '/img/BibliothekZHAW-Winterthur/bild.png',
 		erstelltAm: new Date()
 	},
@@ -29,6 +31,8 @@ const spots = [
 		laerm: 'ruhig',
 		wlan: true,
 		steckdosen: true,
+		lat: 47.377655,
+		lng: 8.5326201,
 		bildUrl: '/img/BibliothekZHAW-ZH/bild.jpg',
 		erstelltAm: new Date()
 	},
@@ -39,6 +43,8 @@ const spots = [
 		laerm: 'ruhig',
 		wlan: true,
 		steckdosen: false,
+		lat: 47.5015809,
+		lng: 8.7302751,
 		bildUrl: '/img/StadtbibliothekWinterthur/Bild.jpg',
 		erstelltAm: new Date()
 	}
