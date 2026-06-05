@@ -38,11 +38,11 @@ Die App läuft danach auf http://localhost:5173
 1. [Ausgangslage](#1-ausgangslage)
 2. [Lösungsidee](#2-lösungsidee)
 3. [Vorgehen & Artefakte](#3-vorgehen--artefakte)
-    1. [Understand & Define](#31-understand--define)
-    2. [Sketch](#32-sketch)
-    3. [Decide](#33-decide)
-    4. [Prototype](#34-prototype)
-    5. [Validate](#35-validate)
+   1. [Understand & Define](#31-understand--define)
+   2. [Sketch](#32-sketch)
+   3. [Decide](#33-decide)
+   4. [Prototype](#34-prototype)
+   5. [Validate](#35-validate)
 4. [Erweiterungen](#4-erweiterungen)
 5. [Projektorganisation](#5-projektorganisation)
 6. [KI-Deklaration](#6-ki-deklaration)
@@ -66,7 +66,7 @@ Die Kernfunktionen umfassen das Auflisten und Filtern von Spots, eine Detailseit
 
 ### 3.1 Understand & Define
 
-Um den Problemraum zu verstehen, wurde zunächst das eigene Nutzungsverhalten als ZHAW-Studierender reflektiert und mit Kommiliton:innen besprochen. Das Problem ist nicht das Finden von Lernorten überhaupt, sondern das Finden von *passenden* Lernorten *kurzfristig* ohne Umwege und ohne böse Überraschungen. Google Maps scheitert hier nicht an der Datenmenge, sondern an fehlender studienrelevanter Filterbarkeit.
+Um den Problemraum zu verstehen, wurde zunächst das eigene Nutzungsverhalten als ZHAW-Studierender reflektiert und mit Kommiliton:innen besprochen. Das Problem ist nicht das Finden von Lernorten überhaupt, sondern das Finden von _passenden_ Lernorten _kurzfristig_ ohne Umwege und ohne böse Überraschungen. Google Maps scheitert hier nicht an der Datenmenge, sondern an fehlender studienrelevanter Filterbarkeit.
 
 Auf Basis dieser Analyse wurden zwei Personas erarbeitet.
 
@@ -206,43 +206,43 @@ Stichprobe: 2 ZHAW-Studierende (Kommilitonen, Modul Prototyping), Desktop-Ansich
 
 **Aufgaben/Szenarien:**
 
-| # | Aufgabe | Testziel |
-|---|---------|----------|
-| 1 | «Du suchst einen ruhigen Lernort mit WLAN in Winterthur. Finde einen geeigneten Spot.» | Navigation + Filterverständnis |
-| 2 | «Schau dir die Details des Spots ‹Stadtbibliothek Winterthur› an und gib eine Bewertung ab.» | Detailseite + Review-Formular |
-| 3 | «Du kennst einen guten Lernort, der noch nicht erfasst ist. Trag ihn in der App ein.» | /spots/create – Formular-Usability |
+| #   | Aufgabe                                                                                      | Testziel                           |
+| --- | -------------------------------------------------------------------------------------------- | ---------------------------------- |
+| 1   | «Du suchst einen ruhigen Lernort mit WLAN in Winterthur. Finde einen geeigneten Spot.»       | Navigation + Filterverständnis     |
+| 2   | «Schau dir die Details des Spots ‹Stadtbibliothek Winterthur› an und gib eine Bewertung ab.» | Detailseite + Review-Formular      |
+| 3   | «Du kennst einen guten Lernort, der noch nicht erfasst ist. Trag ihn in der App ein.»        | /spots/create – Formular-Usability |
 
 **Beobachtungen:**
 
 **P1 (Proband 1)**
 
-- **U-01** *(Mittel)* – Adresskarte erscheint im Create-Formular nicht automatisch; P1 unsicher ob Adresse korrekt gespeichert wurde.
-- **U-02** *(Hoch)* – Kein Adress-Autocomplete; P1 wünschte sich Vorschläge zur Validierung.
-- **U-03** *(Hoch)* – Keine Live-Belegungsanzeige; P1 nannte dies das wichtigste fehlende Feature.
-- **U-04** *(Niedrig)* – Wenige Einträge in der Spot-Liste; Content-Problem, kein UX-Bug.
-- **U-05** *(Mittel)* – Login-Beschränkung fehlt noch; P1 sah dies als wichtig für Vertrauen und Qualität.
-- **U-06** *(Mittel)* – Übersichtskarte mit allen Spot-Pins am Ende der Liste gewünscht.
+- **U-01** _(Mittel)_ – Adresskarte erscheint im Create-Formular nicht automatisch; P1 unsicher ob Adresse korrekt gespeichert wurde.
+- **U-02** _(Hoch)_ – Kein Adress-Autocomplete; P1 wünschte sich Vorschläge zur Validierung.
+- **U-03** _(Hoch)_ – Keine Live-Belegungsanzeige; P1 nannte dies das wichtigste fehlende Feature.
+- **U-04** _(Niedrig)_ – Wenige Einträge in der Spot-Liste; Content-Problem, kein UX-Bug.
+- **U-05** _(Mittel)_ – Login-Beschränkung fehlt noch; P1 sah dies als wichtig für Vertrauen und Qualität.
+- **U-06** _(Mittel)_ – Übersichtskarte mit allen Spot-Pins am Ende der Liste gewünscht.
 
 **P2 (Proband 2)**
 
-- **U-07** *(Niedrig)* – Kein Website-Link pro Spot auf der Detailseite.
-- **U-08** *(Hoch)* – Öffnungszeiten fehlen vollständig; P2 bezeichnete dies als potenziellen Showstopper.
-- **U-09** *(Niedrig)* – Darkmode für nächtliche Lernphasen gewünscht (Nice-to-have).
-- **U-10** *(Niedrig)* – Empfehlungen für Cafés in der Nähe vorgeschlagen (Out-of-scope).
+- **U-07** _(Niedrig)_ – Kein Website-Link pro Spot auf der Detailseite.
+- **U-08** _(Hoch)_ – Öffnungszeiten fehlen vollständig; P2 bezeichnete dies als potenziellen Showstopper.
+- **U-09** _(Niedrig)_ – Darkmode für nächtliche Lernphasen gewünscht (Nice-to-have).
+- **U-10** _(Niedrig)_ – Empfehlungen für Cafés in der Nähe vorgeschlagen (Out-of-scope).
 
 **Zusammenfassung:** Beide Testpersonen konnten die Kernfunktionen (Spot finden, Bewertung abgeben) ohne grosse Hürden durchführen. Die Grundnavigation und die Badge-Darstellung wurden als klar und verständlich bewertet. Die grössten Schwachstellen lagen im Spot-Erstellungsprozess (fehlende Adressvalidierung und Kartenvorschau, U-01/U-02) sowie in fehlenden Echtzeit-Informationen zur Belegung (U-03). Letzteres wurde von P2 als potenzieller Showstopper für den regulären Einsatz eingestuft.
 
 **Abgeleitete Verbesserungen:**
 
-| Priorität | Issue | Massnahme | Aufwand |
-|-----------|-------|-----------|---------|
-| 1 | U-02 | Adress-Autocomplete beim Spot-Erstellen (Nominatim-API) | Mittel |
-| 2 | U-01 | Kartenvorschau im Create-Formular automatisch rendern, sobald Adressfeld verlassen wird | Gering |
-| 3 | U-03 | Live-Statusmeldung «ruhig / mittel / voll» per Community-Check-in (verfällt nach 60 Min.) | Hoch |
-| 4 | U-06 | Übersichtskarte mit allen Spot-Pins am Ende der /spots-Seite | Gering |
-| 5 | U-08 | Öffnungszeiten-Feld in Datenbankschema und Detailseite ergänzen | Mittel |
-| 6 | U-05 | Supabase-Auth mit @zhaw.ch-Validierung | Hoch |
-| 7 | U-07 | Website-Link-Feld auf Detailseite | Gering |
+| Priorität | Issue | Massnahme                                                                                 | Aufwand |
+| --------- | ----- | ----------------------------------------------------------------------------------------- | ------- |
+| 1         | U-02  | Adress-Autocomplete beim Spot-Erstellen (Nominatim-API)                                   | Mittel  |
+| 2         | U-01  | Kartenvorschau im Create-Formular automatisch rendern, sobald Adressfeld verlassen wird   | Gering  |
+| 3         | U-03  | Live-Statusmeldung «ruhig / mittel / voll» per Community-Check-in (verfällt nach 60 Min.) | Hoch    |
+| 4         | U-06  | Übersichtskarte mit allen Spot-Pins am Ende der /spots-Seite                              | Gering  |
+| 5         | U-08  | Öffnungszeiten-Feld in Datenbankschema und Detailseite ergänzen                           | Mittel  |
+| 6         | U-05  | Supabase-Auth mit @zhaw.ch-Validierung                                                    | Hoch    |
+| 7         | U-07  | Website-Link-Feld auf Detailseite                                                         | Gering  |
 
 Issue U-08 (Öffnungszeiten) wurde trotz hoher Priorität bewusst zurückgestellt: Verlässliche Öffnungszeiten je Spot würden manuelle Pflege oder eine externe Datenquelle erfordern, was den Projektrahmen gesprengt hätte. Der Live-Status (U-03) deckt den dahinterliegenden Bedarf «Ist der Ort gerade nutzbar?» zumindest teilweise ab.
 
@@ -272,7 +272,7 @@ Die Spot-Liste auf `/spots` kann nach dem aktuellen Live-Status gefiltert werden
 
 **Spot bearbeiten (Admin-Edit)**
 
-Nutzende mit Admin-Rechten können bestehende Spots über ein Bearbeitungsformular unter `/spots/[id]/edit` aktualisieren. Die Berechtigung wird serverseitig gegen die Admin-E-Mail-Adresse aus den Umgebungsvariablen geprüft.
+Der Projektersteller verfügt über einen einzelnen Admin-Account. Es gibt kein Mehrbenutzer-Rollensystem: Die Berechtigung wird serverseitig geprüft, indem die E-Mail-Adresse der eingeloggten Session mit der in der Umgebungsvariable `ADMIN_EMAIL` hinterlegten Adresse verglichen wird. Nur bei Übereinstimmung ist das Bearbeitungsformular unter `/spots/[id]/edit` zugänglich.
 
 **Website-Link pro Spot (aus U-07)**
 
@@ -294,28 +294,28 @@ Zur Datenbank-Sicherheit: Atlas Network Access ist bewusst auf `0.0.0.0/0` geset
 
 ## 6. KI-Deklaration
 
-KI-Tools (primär Claude via Anthropic Cowork & Claude Code) wurden während des gesamten Projekts als Arbeits- und Lernhilfe eingesetzt. Der Einsatz lässt sich in 
+KI-Tools (primär Claude via Anthropic Cowork & Claude Code) wurden während des gesamten Projekts als Arbeits- und Lernhilfe eingesetzt. Der Einsatz lässt sich in
 drei Bereiche gliedern:
 
 **Projektorganisation und Planung**  
-Claude diente als strukturgebender Assistent: Wochenplan besprechen, 
-Priorisierungen hinterfragen, Fortschritt tracken. Die Entscheidungen 
-(welche Extensions, welche Reihenfolge, wie stark abweichen vom Plan) 
-habe ich selbst getroffen, Claude hat sie kritisch begleitet und 
+Claude diente als strukturgebender Assistent: Wochenplan besprechen,
+Priorisierungen hinterfragen, Fortschritt tracken. Die Entscheidungen
+(welche Extensions, welche Reihenfolge, wie stark abweichen vom Plan)
+habe ich selbst getroffen, Claude hat sie kritisch begleitet und
 blinde Flecken aufgezeigt.
 
 **Code-Entwicklung**  
-Beim Schreiben von Code habe ich KI als erfahrenen Reviewer eingesetzt: 
-Fehlermeldungen erklären lassen, Lösungsansätze diskutieren, bestehenden 
-Code auf Probleme prüfen. Eigenständig umgesetzte Teile (z. B. 
-MongoDB-Anbindung, SvelteKit-Routing, Supabase-Auth-Flow) wurden danach 
-mit KI-Unterstützung bereinigt und verbessert, aber nicht von Grund auf 
+Beim Schreiben von Code habe ich KI als erfahrenen Reviewer eingesetzt:
+Fehlermeldungen erklären lassen, Lösungsansätze diskutieren, bestehenden
+Code auf Probleme prüfen. Eigenständig umgesetzte Teile (z. B.
+MongoDB-Anbindung, SvelteKit-Routing, Supabase-Auth-Flow) wurden danach
+mit KI-Unterstützung bereinigt und verbessert, aber nicht von Grund auf
 generiert.
 
 **Dokumentation**  
-Bei der README hat KI geholfen, Formulierungen zu schärfen und die 
-Struktur einzuhalten. Die inhaltlichen Aussagen wie Personas, Beobachtungen 
-aus dem Usability-Test und Designentscheide stammen aus eigener Arbeit 
+Bei der README hat KI geholfen, Formulierungen zu schärfen und die
+Struktur einzuhalten. Die inhaltlichen Aussagen wie Personas, Beobachtungen
+aus dem Usability-Test und Designentscheide stammen aus eigener Arbeit
 und Reflexion.
 
 ## 7. Anhang
@@ -326,20 +326,20 @@ Die Screenshots zeigen den Zustand der App zum Zeitpunkt des Usability-Tests und
 
 **Startseite (`/`)**  
 ![Startseite](docs/screenshots/Homescreen.png)  
-*Hero-Bereich mit Call-to-Action, Feature-Übersicht und Link zum Spot erfassen.*
+_Hero-Bereich mit Call-to-Action, Feature-Übersicht und Link zum Spot erfassen._
 
 **Spot-Übersicht (`/spots`)**  
 ![Spot-Übersicht](docs/screenshots/Spots.png)  
-*Grid-Ansicht aller Lernorte mit Badge-Darstellung (Lärmpegel, WLAN, Steckdosen) und Details-Button. Belegungs-Badge und Filter kamen erst nach dem Test dazu (siehe Kap. 4).*
+_Grid-Ansicht aller Lernorte mit Badge-Darstellung (Lärmpegel, WLAN, Steckdosen) und Details-Button. Belegungs-Badge und Filter kamen erst nach dem Test dazu (siehe Kap. 4)._
 
 **Spot-Detailseite (`/spots/[id]`)**  
 ![Spot-Detail](docs/screenshots/Detail-Spots.png)  
-*Detailseite mit Bild, Beschreibung, Badges und interaktiver Karte mit Spot-Marker.*
+_Detailseite mit Bild, Beschreibung, Badges und interaktiver Karte mit Spot-Marker._
 
 **Spot erfassen (`/spots/create`)**  
 ![Spot erstellen](docs/screenshots/Spot-erfassen.png)  
-*Formular zum Erfassen eines neuen Lernorts mit Pflichtfeldern, Lärmpegel-Dropdown und Checkboxen für WLAN und Steckdosen. Das Adress-Autocomplete kam erst nach dem Test dazu (siehe Kap. 4).*
+_Formular zum Erfassen eines neuen Lernorts mit Pflichtfeldern, Lärmpegel-Dropdown und Checkboxen für WLAN und Steckdosen. Das Adress-Autocomplete kam erst nach dem Test dazu (siehe Kap. 4)._
 
 ---
 
-*Weitere Artefakte: Persona-Profile (Kap. 3.1), User Journey Map (Kap. 3.1), Crazy-8s Wireframes (Kap. 3.2), ER-Diagramm (Kap. 3.4.2).*
+_Weitere Artefakte: Persona-Profile (Kap. 3.1), User Journey Map (Kap. 3.1), Crazy-8s Wireframes (Kap. 3.2), ER-Diagramm (Kap. 3.4.2)._

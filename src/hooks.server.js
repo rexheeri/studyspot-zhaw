@@ -4,18 +4,18 @@
 import { createSupabaseServerClient } from '$lib/supabase';
 
 export async function handle({ event, resolve }) {
-  event.locals.supabase = createSupabaseServerClient(event.cookies);
+	event.locals.supabase = createSupabaseServerClient(event.cookies);
 
-  // getUser() validiert das JWT gegen den Supabase-Auth-Server (sicherer als getSession())
-  const {
-    data: { user }
-  } = await event.locals.supabase.auth.getUser();
+	// getUser() validiert das JWT gegen den Supabase-Auth-Server (sicherer als getSession())
+	const {
+		data: { user }
+	} = await event.locals.supabase.auth.getUser();
 
-  event.locals.user = user ?? null;
+	event.locals.user = user ?? null;
 
-  return resolve(event, {
-    filterSerializedResponseHeaders(name) {
-      return name === 'content-range' || name === 'x-supabase-api-version';
-    }
-  });
+	return resolve(event, {
+		filterSerializedResponseHeaders(name) {
+			return name === 'content-range' || name === 'x-supabase-api-version';
+		}
+	});
 }

@@ -121,7 +121,10 @@
 
 	function ladeLeaflet() {
 		return new Promise((resolve) => {
-			if (window.L) { resolve(); return; }
+			if (window.L) {
+				resolve();
+				return;
+			}
 			const s = document.createElement('script');
 			s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
 			s.onload = resolve;
@@ -190,7 +193,11 @@
 					bind:value={adresseAnzeige}
 					oninput={onAdresseInput}
 					onkeydown={onKeyDown}
-					onblur={() => setTimeout(() => { vorschlagOffen = false; aktiveIndex = -1; }, 150)}
+					onblur={() =>
+						setTimeout(() => {
+							vorschlagOffen = false;
+							aktiveIndex = -1;
+						}, 150)}
 					autocomplete="off"
 					aria-autocomplete="list"
 					aria-expanded={vorschlagOffen}
@@ -206,11 +213,7 @@
 				{/if}
 
 				{#if vorschlagOffen && vorschlaege.length > 0}
-					<div
-						class="adresse-dropdown"
-						role="listbox"
-						transition:dropdownTransition
-					>
+					<div class="adresse-dropdown" role="listbox" transition:dropdownTransition>
 						{#each vorschlaege as v, i (v.place_id ?? i)}
 							<button
 								type="button"

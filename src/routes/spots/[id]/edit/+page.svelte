@@ -14,8 +14,7 @@
 	let lng = $state(String(s.lng ?? ''));
 
 	const adresseInit =
-		s.adresse ||
-		[strasse, plz && ort ? `${plz} ${ort}` : ort].filter(Boolean).join(', ');
+		s.adresse || [strasse, plz && ort ? `${plz} ${ort}` : ort].filter(Boolean).join(', ');
 	let adresseAnzeige = $state(adresseInit);
 
 	let vorschlaege = $state([]);
@@ -125,7 +124,10 @@
 
 	function ladeLeaflet() {
 		return new Promise((resolve) => {
-			if (window.L) { resolve(); return; }
+			if (window.L) {
+				resolve();
+				return;
+			}
 			const sc = document.createElement('script');
 			sc.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
 			sc.onload = resolve;
@@ -194,7 +196,11 @@
 					bind:value={adresseAnzeige}
 					oninput={onAdresseInput}
 					onkeydown={onKeyDown}
-					onblur={() => setTimeout(() => { vorschlagOffen = false; aktiveIndex = -1; }, 150)}
+					onblur={() =>
+						setTimeout(() => {
+							vorschlagOffen = false;
+							aktiveIndex = -1;
+						}, 150)}
 					autocomplete="off"
 					aria-autocomplete="list"
 					aria-expanded={vorschlagOffen}
@@ -210,11 +216,7 @@
 				{/if}
 
 				{#if vorschlagOffen && vorschlaege.length > 0}
-					<div
-						class="adresse-dropdown"
-						role="listbox"
-						transition:dropdownTransition
-					>
+					<div class="adresse-dropdown" role="listbox" transition:dropdownTransition>
 						{#each vorschlaege as v, i (v.place_id ?? i)}
 							<button
 								type="button"
@@ -294,13 +296,7 @@
 
 		<div class="mb-4 d-flex gap-4">
 			<div class="form-check">
-				<input
-					type="checkbox"
-					id="wlan"
-					name="wlan"
-					class="form-check-input"
-					checked={s.wlan}
-				/>
+				<input type="checkbox" id="wlan" name="wlan" class="form-check-input" checked={s.wlan} />
 				<label for="wlan" class="form-check-label">
 					<i class="bi bi-wifi me-1"></i>WLAN vorhanden
 				</label>

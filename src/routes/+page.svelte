@@ -19,7 +19,10 @@
 				<div class="card-body p-4">
 					<i class="bi bi-wifi display-4 text-primary mb-3 d-block"></i>
 					<h5 class="card-title">WLAN</h5>
-					<p class="card-text text-muted">Sieh auf einen Blick, ob ein Spot zuverlässiges WLAN bietet – damit du ohne Unterbruch arbeiten kannst.</p>
+					<p class="card-text text-muted">
+						Sieh auf einen Blick, ob ein Spot zuverlässiges WLAN bietet – damit du ohne Unterbruch
+						arbeiten kannst.
+					</p>
 				</div>
 			</div>
 		</div>
@@ -28,7 +31,10 @@
 				<div class="card-body p-4">
 					<i class="bi bi-volume-mute display-4 text-primary mb-3 d-block"></i>
 					<h5 class="card-title">Lärmpegel</h5>
-					<p class="card-text text-muted">Ruhig, mittel oder laut? Filtere Spots nach deinem gewünschten Geräuschpegel und konzentriere dich besser.</p>
+					<p class="card-text text-muted">
+						Ruhig, mittel oder laut? Filtere Spots nach deinem gewünschten Geräuschpegel und
+						konzentriere dich besser.
+					</p>
 				</div>
 			</div>
 		</div>
@@ -37,7 +43,9 @@
 				<div class="card-body p-4">
 					<i class="bi bi-people-fill display-4 text-primary mb-3 d-block"></i>
 					<h5 class="card-title">Live-Belegung</h5>
-					<p class="card-text text-muted">Sieh live, wie voll ein Spot gerade ist – direkt von der Community gemeldet.</p>
+					<p class="card-text text-muted">
+						Sieh live, wie voll ein Spot gerade ist – direkt von der Community gemeldet.
+					</p>
 				</div>
 			</div>
 		</div>
@@ -48,7 +56,9 @@
 <section class="bg-light py-5">
 	<div class="container text-center">
 		<h2 class="mb-3">Kennst du einen guten Spot?</h2>
-		<p class="text-muted mb-4">Teile deinen Lieblingsort mit der ZHAW-Community und hilf anderen Studierenden.</p>
+		<p class="text-muted mb-4">
+			Teile deinen Lieblingsort mit der ZHAW-Community und hilf anderen Studierenden.
+		</p>
 		<a href="/spots/create" class="btn btn-primary btn-lg px-5">Spot eintragen</a>
 	</div>
 </section>

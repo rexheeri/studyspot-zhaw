@@ -4,12 +4,12 @@
 import { redirect } from '@sveltejs/kit';
 
 export async function GET({ url, locals }) {
-  const code = url.searchParams.get('code');
+	const code = url.searchParams.get('code');
 
-  if (code) {
-    await locals.supabase.auth.exchangeCodeForSession(code);
-  }
+	if (code) {
+		await locals.supabase.auth.exchangeCodeForSession(code);
+	}
 
-  // Nach erfolgreicher Bestätigung → direkt zur Spots-Übersicht
-  redirect(303, '/spots');
+	// Nach erfolgreicher Bestätigung → direkt zur Spots-Übersicht
+	redirect(303, '/spots');
 }

@@ -68,6 +68,7 @@
 
 	onMount(async () => {
 		if (!mapDiv || data.spots.length === 0) return;
+		if (!PUBLIC_MAPBOX_TOKEN) return;
 
 		// Dynamischer Import verhindert SSR-Fehler (mapbox-gl nutzt window)
 		const mapboxgl = (await import('mapbox-gl')).default;
@@ -81,6 +82,12 @@
 		});
 
 		map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+		map.on('error', (e) => console.error('Mapbox:', e?.error));
+
+		// ResizeObserver stellt sicher, dass die Karte ihre korrekte Grösse bekommt,
+		// auch wenn der Container beim Init noch nicht final gerendert war.
+		const ro = new ResizeObserver(() => map.resize());
+		ro.observe(mapDiv);
 
 		const mitCoords = data.spots.filter((s) => s.lat && s.lng);
 		const ohneCoords = data.spots.filter((s) => !s.lat || !s.lng);
@@ -88,6 +95,7 @@
 		const bounds = new mapboxgl.LngLatBounds();
 
 		map.on('load', () => {
+			map.resize();
 			for (const spot of mitCoords) {
 				addMarker(mapboxgl, map, spot, spot.lng, spot.lat);
 				bounds.extend([spot.lng, spot.lat]);
@@ -115,7 +123,13 @@
 						);
 						const results = await res.json();
 						if (results.length) {
-							addMarker(mapboxgl, map, spot, parseFloat(results[0].lon), parseFloat(results[0].lat));
+							addMarker(
+								mapboxgl,
+								map,
+								spot,
+								parseFloat(results[0].lon),
+								parseFloat(results[0].lat)
+							);
 						}
 					} catch {
 						// Spot uebersprungen
@@ -280,7 +294,15 @@
 
 		<!-- Übersichtskarte -->
 		<h2 class="h4 mb-3">Alle Lernorte auf der Karte</h2>
-		<div bind:this={mapDiv} class="map-container"></div>
+		{#if PUBLIC_MAPBOX_TOKEN}
+			<div bind:this={mapDiv} class="map-container"></div>
+		{:else}
+			<div
+				class="map-container d-flex align-items-center justify-content-center bg-light text-muted"
+			>
+				<span><i class="bi bi-map me-2"></i>Karte nicht verfügbar (Konfiguration fehlt)</span>
+			</div>
+		{/if}
 	{/if}
 </div>
 

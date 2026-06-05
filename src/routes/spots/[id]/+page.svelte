@@ -49,7 +49,11 @@
 		});
 
 		map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+		map.on('error', (e) => console.error('Mapbox:', e?.error));
 		map.on('load', () => map.resize());
+
+		const ro = new ResizeObserver(() => map.resize());
+		ro.observe(mapContainer);
 
 		const el = document.createElement('div');
 		el.innerHTML = `<i class="bi bi-geo-alt-fill" style="color:white;font-size:16px;line-height:1;pointer-events:none;"></i>`;
@@ -77,6 +81,7 @@
 	}
 
 	async function initKarte() {
+		if (!PUBLIC_MAPBOX_TOKEN) return;
 		const mapboxgl = (await import('mapbox-gl')).default;
 		mapboxgl.accessToken = PUBLIC_MAPBOX_TOKEN;
 
@@ -207,13 +212,22 @@
 			<i class="bi bi-map me-1"></i>{karteAnzeigen ? 'Karte ausblenden' : 'Karte anzeigen'}
 		</button>
 
-		<div
-			bind:this={mapContainer}
-			style="height: 300px; border-radius: 8px; overflow: hidden; {karteAnzeigen
-				? ''
-				: 'display: none;'}"
-			class="d-md-block"
-		></div>
+		{#if PUBLIC_MAPBOX_TOKEN}
+			<div
+				bind:this={mapContainer}
+				style="height: 300px; border-radius: 8px; overflow: hidden; {karteAnzeigen
+					? ''
+					: 'display: none;'}"
+				class="d-md-block"
+			></div>
+		{:else}
+			<div
+				style="height: 300px; border-radius: 8px; overflow: hidden;"
+				class="d-md-block d-flex align-items-center justify-content-center bg-light text-muted"
+			>
+				<span><i class="bi bi-map me-2"></i>Karte nicht verfügbar (Konfiguration fehlt)</span>
+			</div>
+		{/if}
 	</div>
 
 	<hr />
