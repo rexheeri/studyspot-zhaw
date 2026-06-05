@@ -83,6 +83,8 @@
 	async function initKarte() {
 		if (!PUBLIC_MAPBOX_TOKEN) return;
 		const mapboxgl = (await import('mapbox-gl')).default;
+		const MapboxWorker = (await import('mapbox-gl/dist/mapbox-gl-csp-worker?worker')).default;
+		mapboxgl.workerClass = MapboxWorker;
 		mapboxgl.accessToken = PUBLIC_MAPBOX_TOKEN;
 
 		if (data.spot.lat && data.spot.lng) {

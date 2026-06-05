@@ -72,6 +72,8 @@
 
 		// Dynamischer Import verhindert SSR-Fehler (mapbox-gl nutzt window)
 		const mapboxgl = (await import('mapbox-gl')).default;
+		const MapboxWorker = (await import('mapbox-gl/dist/mapbox-gl-csp-worker?worker')).default;
+		mapboxgl.workerClass = MapboxWorker;
 		mapboxgl.accessToken = PUBLIC_MAPBOX_TOKEN;
 
 		const map = new mapboxgl.Map({
