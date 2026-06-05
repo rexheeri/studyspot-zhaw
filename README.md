@@ -284,7 +284,7 @@ Am unteren Ende der `/spots`-Seite zeigt eine interaktive Mapbox-GL-JS-Karte all
 
 ## 5. Projektorganisation
 
-Die Projektarbeit wird über GitHub Issues entlang des Wochenplans strukturiert. Features und Methodik-Artefakte sind als gelabelte GitHub Issues erfasst (`MVP`, `extension`, `methodik`, `deployment`, `validate`) und entlang des Wochenplans abgearbeitet.
+Die Projektarbeit ist in Arbeitspakete gegliedert (MVP → Extensions → Methodik-Artefakte → Deployment) und wird über den Git-Verlauf nachvollziehbar dokumentiert. GitHub Issues wurden ergänzend zur Kursstruktur genutzt.
 
 Commit-Messages folgen dem Schema Conventional Commits (z.B. `feat:`, `fix:`, `chore:`, `docs:`).
 
