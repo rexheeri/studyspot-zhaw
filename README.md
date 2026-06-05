@@ -244,6 +244,8 @@ Stichprobe: 2 ZHAW-Studierende (Kommilitonen, Modul Prototyping), Desktop-Ansich
 | 6 | U-05 | Supabase-Auth mit @zhaw.ch-Validierung | Hoch |
 | 7 | U-07 | Website-Link-Feld auf Detailseite | Gering |
 
+Issue U-08 (Öffnungszeiten) wurde trotz hoher Priorität bewusst zurückgestellt: Verlässliche Öffnungszeiten je Spot würden manuelle Pflege oder eine externe Datenquelle erfordern, was den Projektrahmen gesprengt hätte. Der Live-Status (U-03) deckt den dahinterliegenden Bedarf «Ist der Ort gerade nutzbar?» zumindest teilweise ab.
+
 Issues U-09 (Darkmode) und U-10 (Läden in der Nähe) wurden nicht umgesetzt: zu weit ausserhalb des Projektfokus und zu geringer Nutzen für den Zeitaufwand.
 
 Konkret umgesetzte Verbesserungen nach dem Test: siehe Kap. 4.
