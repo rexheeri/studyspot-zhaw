@@ -125,6 +125,8 @@ In W10 wurde auf Basis der W9-Wireframes ein klickbarer Hi-Fi-Prototyp in Figma 
 
 [Figma-Prototyp öffnen](https://www.figma.com/design/naxGM6CVN7PpOZ6JGnyVzp/StudySpot-ZHAW)
 
+Die Mockups entstanden für Desktop und Mobile (siehe Figma). Da der Usability-Test im Kleinklassen-Setting an Desktop-Rechnern lief, lag der Fokus der Umsetzung zuerst auf der Desktop-Ansicht. Über Bootstrap ist die App responsiv und funktioniert auch auf dem Handy; eine gezielte Mobile-Optimierung passend zu Leas Nutzung unterwegs ist der nächste logische Schritt.
+
 #### 3.4.2 Umsetzung (Technik)
 
 Das Projekt wurde mit SvelteKit umgesetzt und nutzt MongoDB Atlas als Datenbank. Das Styling basiert auf Bootstrap 5. Das Deployment läuft auf Netlify: bei jedem Push auf `main` wird automatisch ein neues Build ausgelöst.
