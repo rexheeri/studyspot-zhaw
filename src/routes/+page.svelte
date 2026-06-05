@@ -37,7 +37,7 @@
 				<div class="card-body p-4">
 					<i class="bi bi-people-fill display-4 text-primary mb-3 d-block"></i>
 					<h5 class="card-title">Live-Belegung</h5>
-					<p class="card-text text-muted">Sieh in Echtzeit, wie voll ein Spot gerade ist – gemeldet von der Community, aktuell bis auf 15 Minuten genau.</p>
+					<p class="card-text text-muted">Sieh live, wie voll ein Spot gerade ist – direkt von der Community gemeldet.</p>
 				</div>
 			</div>
 		</div>

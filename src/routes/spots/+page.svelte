@@ -19,8 +19,7 @@
 	const gefilterteSpots = $derived(
 		data.spots.filter((s) => {
 			if (belegungFilter !== 'alle') {
-				const status = s.currentStatus ?? 'ruhig';
-				if (status !== belegungFilter) return false;
+				if (!s.currentStatus || s.currentStatus !== belegungFilter) return false;
 			}
 			if (nurWlan && !s.wlan) return false;
 			if (nurSteckdosen && !s.steckdosen) return false;
