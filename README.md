@@ -330,7 +330,7 @@ Die Screenshots zeigen den Zustand der App zum Zeitpunkt des Usability-Tests und
 
 **Spot-Übersicht (`/spots`)**  
 ![Spot-Übersicht](docs/screenshots/Spots.png)  
-*Grid-Ansicht aller Lernorte mit Badge-Darstellung (Lärmpegel, WLAN, Belegung) und Details-Button.*
+*Grid-Ansicht aller Lernorte mit Badge-Darstellung (Lärmpegel, WLAN, Steckdosen) und Details-Button. Belegungs-Badge und Filter kamen erst nach dem Test dazu (siehe Kap. 4).*
 
 **Spot-Detailseite (`/spots/[id]`)**  
 ![Spot-Detail](docs/screenshots/Detail-Spots.png)  
@@ -338,7 +338,7 @@ Die Screenshots zeigen den Zustand der App zum Zeitpunkt des Usability-Tests und
 
 **Spot erfassen (`/spots/create`)**  
 ![Spot erstellen](docs/screenshots/Spot-erfassen.png)  
-*Formular zum Erfassen eines neuen Lernorts mit Adress-Autocomplete, Lärmpegel-Dropdown und Checkboxen.*
+*Formular zum Erfassen eines neuen Lernorts mit Pflichtfeldern, Lärmpegel-Dropdown und Checkboxen für WLAN und Steckdosen. Das Adress-Autocomplete kam erst nach dem Test dazu (siehe Kap. 4).*
 
 ---
 
