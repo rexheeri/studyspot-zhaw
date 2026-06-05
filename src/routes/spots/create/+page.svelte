@@ -2,6 +2,8 @@
 	import { enhance } from '$app/forms';
 	import { tick } from 'svelte';
 	import { cubicOut } from 'svelte/easing';
+	import { PUBLIC_MAPBOX_TOKEN } from '$env/static/public';
+	import 'mapbox-gl/dist/mapbox-gl.css';
 
 	let { form } = $props();
 
@@ -119,41 +121,58 @@
 	let mapInstance = null;
 	let markerInstance = null;
 
-	function ladeLeaflet() {
-		return new Promise((resolve) => {
-			if (window.L) {
-				resolve();
-				return;
-			}
-			const s = document.createElement('script');
-			s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-			s.onload = resolve;
-			document.head.appendChild(s);
-		});
-	}
-
 	async function zeigeKarte(lat, lon) {
+		if (!PUBLIC_MAPBOX_TOKEN) return;
 		karteAnzeigen = true;
 		await tick();
-		await ladeLeaflet();
-		const L = window.L;
 		if (!karteInitialisiert) {
-			mapInstance = L.map(mapContainer).setView([lat, lon], 16);
-			L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-			}).addTo(mapInstance);
-			markerInstance = L.marker([lat, lon]).addTo(mapInstance);
+			const mapboxgl = (await import('mapbox-gl')).default;
+			const MapboxWorker = (await import('mapbox-gl/dist/mapbox-gl-csp-worker?worker')).default;
+			mapboxgl.workerClass = MapboxWorker;
+			mapboxgl.accessToken = PUBLIC_MAPBOX_TOKEN;
+
+			mapInstance = new mapboxgl.Map({
+				container: mapContainer,
+				style: 'mapbox://styles/mapbox/streets-v12',
+				center: [lon, lat],
+				zoom: 16
+			});
+
+			mapInstance.addControl(new mapboxgl.NavigationControl(), 'top-right');
+			mapInstance.on('error', (e) => console.error('Mapbox:', e?.error));
+			mapInstance.on('load', () => mapInstance.resize());
+
+			const ro = new ResizeObserver(() => mapInstance.resize());
+			ro.observe(mapContainer);
+
+			const el = document.createElement('div');
+			el.innerHTML = `<i class="bi bi-geo-alt-fill" style="color:white;font-size:16px;line-height:1;pointer-events:none;"></i>`;
+			Object.assign(el.style, {
+				width: '36px',
+				height: '36px',
+				background: '#0d6efd',
+				borderRadius: '50%',
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+				boxShadow: '0 2px 10px rgba(13,110,253,0.45)',
+				transition: 'transform 200ms cubic-bezier(0.23,1,0.32,1)',
+				cursor: 'pointer'
+			});
+
+			markerInstance = new mapboxgl.Marker({ element: el })
+				.setLngLat([lon, lat])
+				.addTo(mapInstance);
 			karteInitialisiert = true;
 		} else {
-			mapInstance.setView([lat, lon], 16);
-			markerInstance.setLatLng([lat, lon]);
+			mapInstance.setCenter([lon, lat]);
+			markerInstance.setLngLat([lon, lat]);
 		}
 	}
 </script>
 
 <svelte:head>
 	<title>Spot eintragen – StudySpot ZHAW</title>
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </svelte:head>
 
 <div class="container py-5" style="max-width: 640px;">

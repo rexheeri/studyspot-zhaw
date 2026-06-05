@@ -185,7 +185,7 @@ Die Collection `spots` enthält alle Lernorte mit den Feldern: name, strasse, pl
 
 Die App nutzt SvelteKit File-Based Routing mit `+page.svelte` für die UI und `+page.server.js` für alle Datenbankzugriffe. Datenbankoperationen laufen ausschliesslich serverseitig; der MongoDB-URI wird nie an den Client übertragen. Die Verbindung wird in `src/lib/db.js` zentral verwaltet, mit dem nativen MongoDB Driver statt Mongoose. Diese Entscheidung wurde bewusst getroffen, um unnötige Abstraktion zu vermeiden und die Datenbankebene direkt zu halten.
 
-In W11 wurden die Grundfunktionen implementiert: Spots auflisten, Spot-Detailseite, Spot erfassen via Form Action, Review abgeben via Form Action sowie eine interaktive Karte mit Geocoding via Nominatim. Statt Google Maps wurde Mapbox gewählt, da es ohne API-Key-Abrechnungsrisiko nutzbar ist und optisch überzeugender ist als Leaflet.
+In W11 wurden die Grundfunktionen implementiert: Spots auflisten, Spot-Detailseite, Spot erfassen via Form Action, Review abgeben via Form Action sowie eine interaktive Karte mit Geocoding via Nominatim. Statt Google Maps wurde Mapbox GL JS gewählt, da es ohne API-Key-Abrechnungsrisiko nutzbar ist und optisch überzeugend ist. Alle interaktiven Karten der App (Übersichtsseite, Detailseite und Adress-Vorschau im Erfassen-Formular) nutzen einheitlich Mapbox GL JS.
 
 Live-URL: https://studyspot-zhaw.netlify.app/
 
