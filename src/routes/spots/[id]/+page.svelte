@@ -40,28 +40,7 @@
 		}
 	}
 
-	async function initKarte() {
-		let lng = data.spot.lng;
-		let lat = data.spot.lat;
-
-		if (!lat || !lng) {
-			try {
-				const res = await fetch(
-					`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(adresse)}&limit=1`,
-					{ headers: { 'Accept-Language': 'de' } }
-				);
-				const results = await res.json();
-				if (!results.length) return;
-				lat = parseFloat(results[0].lat);
-				lng = parseFloat(results[0].lon);
-			} catch {
-				return;
-			}
-		}
-
-		const mapboxgl = (await import('mapbox-gl')).default;
-		mapboxgl.accessToken = PUBLIC_MAPBOX_TOKEN;
-
+	function baueKarte(mapboxgl, lat, lng) {
 		const map = new mapboxgl.Map({
 			container: mapContainer,
 			style: 'mapbox://styles/mapbox/streets-v12',
@@ -70,9 +49,7 @@
 		});
 
 		map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-		map.on('load', () => {
-			map.resize();
-		});
+		map.on('load', () => map.resize());
 
 		const el = document.createElement('div');
 		el.innerHTML = `<i class="bi bi-geo-alt-fill" style="color:white;font-size:16px;line-height:1;pointer-events:none;"></i>`;
@@ -96,8 +73,31 @@
 		);
 
 		new mapboxgl.Marker({ element: el }).setLngLat([lng, lat]).setPopup(popup).addTo(map);
-
 		karteInitialisiert = true;
+	}
+
+	async function initKarte() {
+		const mapboxgl = (await import('mapbox-gl')).default;
+		mapboxgl.accessToken = PUBLIC_MAPBOX_TOKEN;
+
+		if (data.spot.lat && data.spot.lng) {
+			// Normalfall: Koordinaten vorhanden, Karte sofort bauen
+			baueKarte(mapboxgl, data.spot.lat, data.spot.lng);
+			return;
+		}
+
+		// Fallback: Adresse einmalig ueber Nominatim geocodieren
+		try {
+			const res = await fetch(
+				`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(adresse)}&limit=1`,
+				{ headers: { 'Accept-Language': 'de' } }
+			);
+			const results = await res.json();
+			if (!results.length) return;
+			baueKarte(mapboxgl, parseFloat(results[0].lat), parseFloat(results[0].lon));
+		} catch {
+			// Karte nicht anzeigbar
+		}
 	}
 
 	onMount(async () => {

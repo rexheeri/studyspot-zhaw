@@ -101,22 +101,27 @@
 			}
 		});
 
-		// Spots ohne Koordinaten sequentiell geocodieren (Nominatim: 1 req/s)
-		for (const spot of ohneCoords) {
-			await new Promise((r) => setTimeout(r, 1100));
-			try {
-				const adresse = spotAdresse(spot);
-				const res = await fetch(
-					`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(adresse)}&limit=1`,
-					{ headers: { 'Accept-Language': 'de' } }
-				);
-				const results = await res.json();
-				if (results.length) {
-					addMarker(mapboxgl, map, spot, parseFloat(results[0].lon), parseFloat(results[0].lat));
+		// Fallback: Spots ohne Koordinaten nachtraeglich geocodieren (Nominatim: 1 req/s).
+		// Fire-and-forget – onMount wartet nicht, Karte erscheint sofort.
+		if (ohneCoords.length > 0) {
+			(async () => {
+				for (const spot of ohneCoords) {
+					await new Promise((r) => setTimeout(r, 1100));
+					try {
+						const adresse = spotAdresse(spot);
+						const res = await fetch(
+							`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(adresse)}&limit=1`,
+							{ headers: { 'Accept-Language': 'de' } }
+						);
+						const results = await res.json();
+						if (results.length) {
+							addMarker(mapboxgl, map, spot, parseFloat(results[0].lon), parseFloat(results[0].lat));
+						}
+					} catch {
+						// Spot uebersprungen
+					}
 				}
-			} catch {
-				// Spot still übersprungen
-			}
+			})();
 		}
 	});
 </script>
