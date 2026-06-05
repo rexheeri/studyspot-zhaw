@@ -292,8 +292,8 @@
 		</div>
 	{/if}
 
-	<!-- Review-Formular (nur für eingeloggte User) -->
-	{#if data.user}
+	<!-- Review-Formular (nur für eingeloggte User, die noch nicht bewertet haben) -->
+	{#if data.user && !data.hatBewertet}
 		<h3 class="h5 mt-4 mb-3">Bewertung abgeben</h3>
 
 		{#if form?.success}
@@ -324,6 +324,10 @@
 				<i class="bi bi-send me-1"></i>Bewertung absenden
 			</button>
 		</form>
+	{:else if data.user && data.hatBewertet}
+		<p class="text-muted mb-5">
+			<i class="bi bi-check-circle me-1"></i>Du hast diesen Spot bereits bewertet.
+		</p>
 	{:else}
 		<p class="text-muted mb-5">
 			<a href="/login">Einloggen</a>, um eine Bewertung abzugeben.

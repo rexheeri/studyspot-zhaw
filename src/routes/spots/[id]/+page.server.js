@@ -53,13 +53,22 @@ export async function load({ params, locals }) {
 			};
 		}
 
+		const hatBewertet = locals.user
+			? reviews.some((r) => r.autorEmail === locals.user.email)
+			: false;
+
 		return {
 			spot: { ...spot, _id: spot._id.toString() },
-			reviews: reviews.map((r) => ({ ...r, _id: r._id.toString(), spotId: r.spotId.toString() })),
+			reviews: reviews.map((r) => {
+				// eslint-disable-next-line no-unused-vars
+				const { autorEmail, ...rest } = r;
+				return { ...rest, _id: r._id.toString(), spotId: r.spotId.toString() };
+			}),
 			avgRating,
 			user: locals.user,
 			isAdmin: locals.user?.email === ADMIN_EMAIL,
-			currentStatus
+			currentStatus,
+			hatBewertet
 		};
 	} catch (e) {
 		if (e.status === 404) throw e;
@@ -83,14 +92,33 @@ export const actions = {
 		}
 
 		const db = await getDb();
-		await db.collection('reviews').insertOne({
-			spotId: new ObjectId(params.id),
-			autorName: locals.user.email.split('@')[0],
-			autorEmail: locals.user.email,
-			sterne,
-			kommentar: kommentar || '',
-			erstelltAm: new Date()
-		});
+
+		try {
+			const schonBewertet = await db.collection('reviews').findOne({
+				spotId: new ObjectId(params.id),
+				autorEmail: locals.user.email
+			});
+			if (schonBewertet) {
+				return fail(409, { error: 'Du hast diesen Spot bereits bewertet.' });
+			}
+		} catch (e) {
+			console.error('Fehler beim Prüfen auf Doppelbewertung:', e);
+			return fail(500, { error: 'Bewertung konnte nicht geprüft werden.' });
+		}
+
+		try {
+			await db.collection('reviews').insertOne({
+				spotId: new ObjectId(params.id),
+				autorName: locals.user.email.split('@')[0],
+				autorEmail: locals.user.email,
+				sterne,
+				kommentar: kommentar || '',
+				erstelltAm: new Date()
+			});
+		} catch (e) {
+			console.error('Fehler beim Speichern der Bewertung:', e);
+			return fail(500, { error: 'Bewertung konnte nicht gespeichert werden.' });
+		}
 
 		return { success: true };
 	},
