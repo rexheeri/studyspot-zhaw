@@ -1,5 +1,4 @@
 <!-- src/routes/+layout.svelte -->
-<!-- ERSETZE die bestehende Navbar mit dieser Version. Den Rest deines Layouts (Bootstrap-Import etc.) beibehalten. -->
 
 <script>
 	import { enhance } from '$app/forms';
