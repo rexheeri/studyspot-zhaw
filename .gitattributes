@@ -1,0 +1,15 @@
+# Alle Textdateien mit LF normalisieren
+* text=auto eol=lf
+
+# Binaerdateien unveraendert lassen
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.pdf binary
+*.zip binary
