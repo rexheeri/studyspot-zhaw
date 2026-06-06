@@ -151,8 +151,22 @@
 		/>
 	{/if}
 
-	<!-- Titel & Adresse -->
-	<h1 class="mb-1">{data.spot.name}</h1>
+	<!-- Titel & Favorit-Button -->
+	<div class="d-flex align-items-start justify-content-between mb-1">
+		<h1 class="mb-0">{data.spot.name}</h1>
+		{#if data.user}
+			<form method="POST" action="?/toggleFavorit" use:enhance class="mb-0 ms-2 flex-shrink-0">
+				<button
+					type="submit"
+					class="btn btn-sm {data.istFavorit ? 'btn-danger' : 'btn-outline-secondary'}"
+				>
+					<i class="bi bi-heart{data.istFavorit ? '-fill' : ''} me-1"></i>{data.istFavorit
+						? 'Gemerkt'
+						: 'Favorit'}
+				</button>
+			</form>
+		{/if}
+	</div>
 	<p class="text-muted mb-3">
 		<i class="bi bi-geo-alt me-1"></i>{adresse}
 	</p>

@@ -57,6 +57,10 @@ export async function load({ params, locals }) {
 			? reviews.some((r) => r.autorEmail === locals.user.email)
 			: false;
 
+		const istFavorit = locals.user
+			? !!(await db.collection('favorites').findOne({ userId: locals.user.id, spotId }))
+			: false;
+
 		return {
 			spot: { ...spot, _id: spot._id.toString() },
 			reviews: reviews.map((r) => {
@@ -68,7 +72,8 @@ export async function load({ params, locals }) {
 			user: locals.user,
 			isAdmin: locals.user?.email === ADMIN_EMAIL,
 			currentStatus,
-			hatBewertet
+			hatBewertet,
+			istFavorit
 		};
 	} catch (e) {
 		if (e.status === 404) throw e;
@@ -161,6 +166,33 @@ export const actions = {
 		});
 
 		return { statusSuccess: true };
+	},
+
+	toggleFavorit: async ({ params, locals }) => {
+		if (!locals.user) {
+			return fail(401, { error: 'Einloggen erforderlich.' });
+		}
+
+		const spotId = new ObjectId(params.id);
+		const db = await getDb();
+
+		try {
+			const vorhanden = await db
+				.collection('favorites')
+				.findOne({ userId: locals.user.id, spotId });
+			if (vorhanden) {
+				await db.collection('favorites').deleteOne({ userId: locals.user.id, spotId });
+			} else {
+				await db
+					.collection('favorites')
+					.insertOne({ userId: locals.user.id, spotId, erstelltAm: new Date() });
+			}
+		} catch (e) {
+			console.error('Fehler beim Favorit-Toggle:', e);
+			return fail(500, { error: 'Favorit konnte nicht gespeichert werden.' });
+		}
+
+		return { favoritSuccess: true };
 	},
 
 	deleteSpot: async ({ params, locals }) => {

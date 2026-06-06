@@ -25,7 +25,8 @@
 			<a class="nav-link text-white" href="/spots">Spots</a>
 
 			{#if user}
-				<!-- Eingeloggt: Spot eintragen + Logout -->
+				<!-- Eingeloggt: Favoriten + Spot eintragen + Logout -->
+				<a class="nav-link text-white" href="/favoriten">Favoriten</a>
 				<a class="nav-link text-white" href="/spots/create">Spot eintragen</a>
 				<form method="POST" action="/login?/logout" use:enhance class="mb-0">
 					<button type="submit" class="btn btn-outline-light btn-sm"> Abmelden </button>

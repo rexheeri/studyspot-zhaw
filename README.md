@@ -137,8 +137,10 @@ Das Datenmodell besteht aus drei Collections in MongoDB sowie der Supabase-verwa
 erDiagram
     SPOTS ||--o{ REVIEWS : "hat"
     SPOTS ||--o{ CHECKINS : "hat"
+    SPOTS ||--o{ FAVORITES : "gemerkt in"
     REVIEWS }o--|| USERS : "geschrieben von"
     CHECKINS }o--|| USERS : "erstellt von"
+    FAVORITES }o--|| USERS : "gehört"
 
     SPOTS {
         ObjectId _id PK
@@ -178,6 +180,12 @@ erDiagram
         uuid id PK
         string email
         date created_at
+    }
+    FAVORITES {
+        ObjectId _id PK
+        ObjectId spotId FK
+        string userId FK
+        date erstelltAm
     }
 ```
 
@@ -281,6 +289,10 @@ Jeder Spot kann einen Link zur offiziellen Website enthalten, z. B. zur ZHAW-Bib
 **Mapbox-Übersichtskarte (aus U-06)**
 
 Am unteren Ende der `/spots`-Seite zeigt eine interaktive Mapbox-GL-JS-Karte alle erfassten Spots als Pins. Ein Klick auf einen Pin öffnet die Detailseite des jeweiligen Spots. Die Karte gibt eine räumliche Übersicht und ist besonders nützlich für Nutzende wie Noah, die Spots auf dem Weg zwischen Arbeit und Campus suchen.
+
+**Favoriten**
+
+Eingeloggte Nutzende können beliebige Spots als Favoriten speichern. Auf der Detailseite jedes Spots erscheint ein «Favorit»-Button (Herz-Icon); ein erneuter Klick entfernt den Spot wieder aus der Liste. Die persönliche Übersicht aller gespeicherten Spots ist unter `/favoriten` abrufbar, die über den Navbar-Link «Favoriten» erreichbar ist. Die Favoritenliste zeigt dieselben Card-Informationen wie die allgemeine Spot-Übersicht (Bild, Name, Live-Status, Adresse, Badges) plus einen «Entfernen»-Button je Karte. Favoriten werden in der MongoDB-Collection `favorites` gespeichert; jeder Eintrag referenziert `userId` (Supabase UUID) und `spotId` (ObjectId).
 
 ## 5. Projektorganisation
 
