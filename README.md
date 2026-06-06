@@ -136,7 +136,7 @@ Die Mockups entstanden für Desktop und Mobile (siehe Figma). Da der Usability-T
 
 Das Projekt wurde mit SvelteKit umgesetzt und nutzt MongoDB Atlas als Datenbank. Das Styling basiert auf Bootstrap 5. Das Deployment läuft auf Netlify: bei jedem Push auf `main` wird automatisch ein neues Build ausgelöst.
 
-Das Datenmodell besteht aus drei Collections in MongoDB sowie der Supabase-verwalteten USERS-Tabelle:
+Das Datenmodell besteht aus vier Collections in MongoDB sowie der Supabase-verwalteten USERS-Tabelle:
 
 ```mermaid
 erDiagram
@@ -194,7 +194,7 @@ erDiagram
     }
 ```
 
-Die Collection `spots` enthält alle Lernorte mit den Feldern: name, strasse, plz, ort, adresse (zusammengesetzt), beschreibung, laerm (ruhig|mittel|laut), wlan, steckdosen, bildUrl, websiteUrl, lat, lng, erstelltVon und erstelltAm. Die Collection `reviews` speichert Bewertungen mit Referenz auf einen Spot, Sterne (1 bis 5), Kommentar und Autor. Die Collection `checkins` nimmt zeitlich begrenzte Statusmeldungen pro Spot auf und ist Grundlage für den Live-Belegungsstatus.
+Die Collection `spots` enthält alle Lernorte mit den Feldern: name, strasse, plz, ort, adresse (zusammengesetzt), beschreibung, laerm (ruhig|mittel|laut), wlan, steckdosen, bildUrl, websiteUrl, lat, lng, erstelltVon und erstelltAm. Die Collection `reviews` speichert Bewertungen mit Referenz auf einen Spot, Sterne (1 bis 5), Kommentar und Autor. Die Collection `checkins` nimmt zeitlich begrenzte Statusmeldungen pro Spot auf und ist Grundlage für den Live-Belegungsstatus. Die Collection `favorites` hält die von eingeloggten Nutzenden gemerkten Spots fest und referenziert dazu `userId` (Supabase-UUID) und `spotId` (ObjectId).
 
 Die App nutzt SvelteKit File-Based Routing mit `+page.svelte` für die UI und `+page.server.js` für alle Datenbankzugriffe. Datenbankoperationen laufen ausschliesslich serverseitig; der MongoDB-URI wird nie an den Client übertragen. Die Verbindung wird in `src/lib/db.js` zentral verwaltet, mit dem nativen MongoDB Driver statt Mongoose. Diese Entscheidung wurde bewusst getroffen, um unnötige Abstraktion zu vermeiden und die Datenbankebene direkt zu halten.
 
@@ -265,7 +265,7 @@ Konkret umgesetzte Verbesserungen nach dem Test: siehe Kap. 4.
 
 ## 4. Erweiterungen
 
-Alle nachfolgend beschriebenen Erweiterungen gehen über den Mindestumfang hinaus. Der Grossteil wurde direkt aus den Findings des Usability-Tests abgeleitet. Die App wurde nicht wahllos erweitert, sondern auf Basis echter Nutzungsprobleme verbessert.
+Alle nachfolgend beschriebenen Erweiterungen gehen über den Mindestumfang hinaus. Der Grossteil wurde direkt aus den Findings des Usability-Tests abgeleitet. Die App wurde nicht wahllos erweitert, sondern auf Basis echter Nutzungsprobleme verbessert. Die Favoriten-Funktion (4.9) und der Bild-Upload (4.8) gingen über die konkreten Test-Findings hinaus und ergänzen die App um naheliegende, eigenständig identifizierte Verbesserungen.
 
 ### 4.1 Supabase-Authentifizierung mit ZHAW-Mail-Validierung (aus U-05)
 
