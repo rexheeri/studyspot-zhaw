@@ -321,7 +321,7 @@ Ich habe zwei Anthropic-Tools verwendet: Claude im Cowork-Chat für Planung und 
 
 ### 6.2 Prompt-Vorgehen
 
-In der Planung war Claude vor allem ein Sparringpartner zum Ordnen der Gedanken: Wochenplan durchgehen, Prioritäten hinterfragen, Fortschritt festhalten. Beim Programmieren habe ich es eher wie ein Code-Review benutzt: Fehlermeldungen erklären lassen, Lösungswege durchdiskutieren, bestehenden Code auf Schwachstellen abklopfen. Die zentralen Teile habe ich selbst geschrieben, die MongoDB-Anbindung, das SvelteKit-Routing und den Supabase-Auth-Flow. Die KI kam erst danach dazu, um aufzuräumen und zu verbessern, nicht um etwas von Grund auf zu generieren. Bei der README half sie, Formulierungen zu schärfen und die Vorlagenstruktur einzuhalten. Die Inhalte selbst, also die Personas, die Beobachtungen aus dem Usability-Test und die Designentscheide, kommen aus eigener Arbeit.
+In der Planung war Claude vor allem ein Sparringpartner zum Ordnen der Gedanken: Wochenplan durchgehen, Prioritäten hinterfragen, Fortschritt festhalten. Beim Programmieren habe ich es eher wie ein Code-Review benutzt: Fehlermeldungen erklären lassen, Lösungswege durchdiskutieren, bestehenden Code auf Schwachstellen abklopfen. Die zentralen Teile habe ich selbst geschrieben, die MongoDB-Anbindung, das SvelteKit-Routing und den Supabase-Auth-Flow. Bei der README half sie, Formulierungen zu schärfen und die Vorlagenstruktur einzuhalten. Die Inhalte selbst, also die Personas, die Beobachtungen aus dem Usability-Test und die Designentscheide, kommen aus eigener Arbeit.
 
 ### 6.3 Reflexion
 
