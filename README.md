@@ -317,15 +317,15 @@ Zur Datenbank-Sicherheit: Atlas Network Access ist bewusst auf `0.0.0.0/0` geset
 
 ### 6.1 KI-Tools
 
-Eingesetzt wurden Claude via Anthropic Cowork (Chat-Interface für Planung und Dokumentation) und Claude Code (CLI-Tool für Code-Review direkt im Projektkontext). Der Einsatz erstreckte sich über das gesamte Projekt: Projektorganisation und Planung, Code-Entwicklung sowie Dokumentation.
+Ich habe zwei Anthropic-Tools verwendet: Claude im Cowork-Chat für Planung und Dokumentation, und Claude Code als CLI-Tool für Code-Review direkt im Projekt. Genutzt habe ich beides über das ganze Projekt hinweg, in der Planung, beim Code und bei der Dokumentation.
 
 ### 6.2 Prompt-Vorgehen
 
-In der Planungsphase diente Claude als strukturgebender Assistent: Wochenpläne besprechen, Priorisierungen hinterfragen, Fortschritt tracken. Beim Schreiben von Code wurde KI als erfahrener Reviewer eingesetzt: Fehlermeldungen erklären lassen, Lösungsansätze diskutieren, bestehenden Code auf Probleme prüfen. Eigenständig umgesetzte Teile – z. B. MongoDB-Anbindung, SvelteKit-Routing, Supabase-Auth-Flow – wurden anschliessend mit KI-Unterstützung bereinigt und verbessert, aber nicht von Grund auf generiert. Bei der README hat KI geholfen, Formulierungen zu schärfen und die Struktur einzuhalten; die inhaltlichen Aussagen (Personas, Beobachtungen aus dem Usability-Test, Designentscheide) stammen aus eigener Arbeit und Reflexion.
+In der Planung war Claude vor allem ein Sparringpartner zum Ordnen der Gedanken: Wochenplan durchgehen, Prioritäten hinterfragen, Fortschritt festhalten. Beim Programmieren habe ich es eher wie ein Code-Review benutzt: Fehlermeldungen erklären lassen, Lösungswege durchdiskutieren, bestehenden Code auf Schwachstellen abklopfen. Die zentralen Teile habe ich selbst geschrieben, die MongoDB-Anbindung, das SvelteKit-Routing und den Supabase-Auth-Flow. Die KI kam erst danach dazu, um aufzuräumen und zu verbessern, nicht um etwas von Grund auf zu generieren. Bei der README half sie, Formulierungen zu schärfen und die Vorlagenstruktur einzuhalten. Die Inhalte selbst, also die Personas, die Beobachtungen aus dem Usability-Test und die Designentscheide, kommen aus eigener Arbeit.
 
 ### 6.3 Reflexion
 
-Die Entscheidungen darüber, welche Extensions umgesetzt werden, in welcher Reihenfolge und wie stark vom Plan abgewichen wird, habe ich selbst getroffen – Claude hat sie kritisch begleitet und blinde Flecken aufgezeigt. Der grösste Mehrwert lag nicht im Generieren von Code, sondern im schnellen Feedback auf eigene Überlegungen und im Aufzeigen von Alternativen. Ich habe dabei gelernt, Anforderungen präziser zu formulieren und technische Entscheidungen besser zu begründen. KI beschleunigt die Entwicklung spürbar, ersetzt aber nicht das eigene Verständnis der gewählten Lösungen.
+Was ich umsetze, in welcher Reihenfolge und wie weit ich vom ursprünglichen Plan abweiche, habe ich selbst entschieden; Claude hat kritisch nachgehakt und mich auf blinde Flecken hingewiesen. Der grösste Nutzen war für mich gar nicht der generierte Code, sondern das schnelle Feedback auf eigene Überlegungen und Alternativen, die ich allein vielleicht übersehen hätte. Gelernt habe ich dabei vor allem, präziser zu formulieren, was ich eigentlich will, und technische Entscheide sauberer zu begründen. Schneller wird man damit, das eigene Verständnis der Lösung nimmt einem die KI aber nicht ab.
 
 ## 7. Anhang
 
