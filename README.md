@@ -20,6 +20,8 @@ npm run dev
 
 Die App läuft danach auf http://localhost:5173
 
+Live-URL: https://studyspot-zhaw.netlify.app/
+
 ## Tech-Stack
 
 | Bereich           | Tool          |
