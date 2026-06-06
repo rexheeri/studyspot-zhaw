@@ -290,6 +290,10 @@ Jeder Spot kann einen Link zur offiziellen Website enthalten, z. B. zur ZHAW-Bib
 
 Am unteren Ende der `/spots`-Seite zeigt eine interaktive Mapbox-GL-JS-Karte alle erfassten Spots als Pins. Ein Klick auf einen Pin öffnet die Detailseite des jeweiligen Spots. Die Karte gibt eine räumliche Übersicht und ist besonders nützlich für Nutzende wie Noah, die Spots auf dem Weg zwischen Arbeit und Campus suchen.
 
+**Bild-Upload mit clientseitiger Komprimierung**
+
+Beim Erfassen und Bearbeiten von Spots können Bilder per Dateiwahl oder Drag-and-Drop hochgeladen werden. Da Netlify serverless kein persistentes Dateisystem bietet, werden Bilder vollständig im Browser verarbeitet: Das hochgeladene Bild wird auf maximal 1200 Pixel (längste Kante) herunterskaliert und als JPEG (Qualität 0.8) zu einer Base64-Data-URL komprimiert. Diese Data-URL wird im bestehenden `bildUrl`-Feld der MongoDB-Collection `spots` gespeichert. Bestehende Spots mit einem Pfad oder einer externen URL im `bildUrl`-Feld funktionieren unverändert weiter. Für eine produktive Umgebung würde man stattdessen einen dedizierten Object-Storage-Dienst (z. B. Supabase Storage oder AWS S3) nutzen.
+
 **Favoriten**
 
 Eingeloggte Nutzende können beliebige Spots als Favoriten speichern. Auf der Detailseite jedes Spots erscheint ein «Favorit»-Button (Herz-Icon); ein erneuter Klick entfernt den Spot wieder aus der Liste. Die persönliche Übersicht aller gespeicherten Spots ist unter `/favoriten` abrufbar, die über den Navbar-Link «Favoriten» erreichbar ist. Die Favoritenliste zeigt dieselben Card-Informationen wie die allgemeine Spot-Übersicht (Bild, Name, Live-Status, Adresse, Badges) plus einen «Entfernen»-Button je Karte. Favoriten werden in der MongoDB-Collection `favorites` gespeichert; jeder Eintrag referenziert `userId` (Supabase UUID) und `spotId` (ObjectId).

@@ -124,6 +124,47 @@
 	let mapInstance = null;
 	let markerInstance = null;
 
+	// Bild-Upload
+	let bildVorschau = $state(s.bildUrl ?? '');
+	let dragOver = $state(false);
+	let bildFehler = $state('');
+	let fileInputEl = $state(null);
+
+	async function bildVerarbeiten(file) {
+		if (!file.type.startsWith('image/')) {
+			bildFehler = 'Bitte nur Bilddateien (JPG, PNG, WebP etc.) hochladen.';
+			return;
+		}
+		bildFehler = '';
+		const url = await new Promise((resolve) => {
+			const reader = new FileReader();
+			reader.onload = (e) => resolve(e.target.result);
+			reader.readAsDataURL(file);
+		});
+		const img = await new Promise((resolve) => {
+			const i = new Image();
+			i.onload = () => resolve(i);
+			i.src = url;
+		});
+		const MAX = 1200;
+		let w = img.width;
+		let h = img.height;
+		if (w > MAX || h > MAX) {
+			if (w >= h) {
+				h = Math.round((h * MAX) / w);
+				w = MAX;
+			} else {
+				w = Math.round((w * MAX) / h);
+				h = MAX;
+			}
+		}
+		const canvas = document.createElement('canvas');
+		canvas.width = w;
+		canvas.height = h;
+		canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+		bildVorschau = canvas.toDataURL('image/jpeg', 0.8);
+	}
+
 	async function zeigeKarte(lat, lon) {
 		if (!PUBLIC_MAPBOX_TOKEN) return;
 		karteAnzeigen = true;
@@ -289,16 +330,62 @@
 			</select>
 		</div>
 
+		<!-- Bild-Upload -->
 		<div class="mb-3">
-			<label for="bildUrl" class="form-label fw-medium">Bild-URL</label>
-			<input
-				type="text"
-				id="bildUrl"
-				name="bildUrl"
-				class="form-control"
-				placeholder="/img/..."
-				value={form?.bildUrl ?? s.bildUrl ?? ''}
-			/>
+			<label class="form-label fw-medium">Bild</label>
+			<input type="hidden" name="bildUrl" value={bildVorschau} />
+			{#if bildVorschau}
+				<div class="bild-vorschau">
+					<img src={bildVorschau} alt="Vorschau" class="bild-thumb" />
+					<button
+						type="button"
+						class="btn btn-sm btn-danger bild-entfernen"
+						onclick={() => (bildVorschau = '')}
+						aria-label="Bild entfernen"
+					>
+						<i class="bi bi-x-lg"></i>
+					</button>
+				</div>
+			{:else}
+				<div
+					class="dropzone {dragOver ? 'dragover' : ''}"
+					role="button"
+					tabindex="0"
+					aria-label="Bild hochladen: Datei hierher ziehen oder klicken zum Auswählen"
+					onclick={() => fileInputEl.click()}
+					onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && fileInputEl.click()}
+					ondragover={(e) => {
+						e.preventDefault();
+						dragOver = true;
+					}}
+					ondragleave={() => (dragOver = false)}
+					ondrop={(e) => {
+						e.preventDefault();
+						dragOver = false;
+						const f = e.dataTransfer.files[0];
+						if (f) bildVerarbeiten(f);
+					}}
+				>
+					<i class="bi bi-cloud-arrow-up fs-2 text-muted"></i>
+					<p class="mb-1 text-muted">Bild hierher ziehen oder klicken zum Auswählen</p>
+					<p class="mb-0 text-muted" style="font-size:0.75rem;">
+						JPG, PNG, WebP – wird auf max. 1200 px skaliert
+					</p>
+				</div>
+				<input
+					type="file"
+					accept="image/*"
+					class="visually-hidden"
+					bind:this={fileInputEl}
+					onchange={(e) => {
+						const f = e.target.files[0];
+						if (f) bildVerarbeiten(f);
+					}}
+				/>
+				{#if bildFehler}
+					<p class="text-danger small mt-1 mb-0">{bildFehler}</p>
+				{/if}
+			{/if}
 		</div>
 
 		<div class="mb-3">
@@ -443,5 +530,54 @@
 	/* ── Button Press-Feedback ─────────────────────────────────── */
 	.btn-submit:active {
 		transform: scale(0.97);
+	}
+
+	/* ── Bild-Upload Dropzone ─────────────────────────────────── */
+	.dropzone {
+		border: 2px dashed #dee2e6;
+		border-radius: 8px;
+		padding: 32px 16px;
+		text-align: center;
+		cursor: pointer;
+		transition:
+			border-color 150ms ease,
+			background 150ms ease;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 6px;
+		background: #fff;
+	}
+
+	.dropzone:hover,
+	.dropzone.dragover {
+		border-color: #0d6efd;
+		background: #f0f4ff;
+	}
+
+	.dropzone:focus-visible {
+		outline: 2px solid #0d6efd;
+		outline-offset: 2px;
+		border-color: #0d6efd;
+	}
+
+	.bild-vorschau {
+		position: relative;
+		display: inline-block;
+	}
+
+	.bild-thumb {
+		max-height: 200px;
+		max-width: 100%;
+		border-radius: 8px;
+		display: block;
+	}
+
+	.bild-entfernen {
+		position: absolute;
+		top: 6px;
+		right: 6px;
+		padding: 2px 6px;
+		line-height: 1;
 	}
 </style>

@@ -49,6 +49,10 @@ export const actions = {
 			return fail(400, { error: 'Bitte alle Pflichtfelder ausfüllen.', ...update });
 		}
 
+		if (update.bildUrl.length > 3 * 1024 * 1024) {
+			return fail(400, { error: 'Bild ist zu gross. Bitte ein kleineres Bild wählen.' });
+		}
+
 		const db = await getDb();
 		await db.collection('spots').updateOne({ _id: new ObjectId(params.id) }, { $set: update });
 
