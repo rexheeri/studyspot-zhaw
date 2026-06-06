@@ -48,6 +48,9 @@ Live-URL: https://studyspot-zhaw.netlify.app/
 4. [Erweiterungen](#4-erweiterungen)
 5. [Projektorganisation](#5-projektorganisation)
 6. [KI-Deklaration](#6-ki-deklaration)
+   1. [KI-Tools](#61-ki-tools)
+   2. [Prompt-Vorgehen](#62-prompt-vorgehen)
+   3. [Reflexion](#63-reflexion)
 7. [Anhang](#7-anhang)
 
 ---
@@ -264,39 +267,39 @@ Konkret umgesetzte Verbesserungen nach dem Test: siehe Kap. 4.
 
 Alle nachfolgend beschriebenen Erweiterungen gehen über den Mindestumfang hinaus. Der Grossteil wurde direkt aus den Findings des Usability-Tests abgeleitet. Die App wurde nicht wahllos erweitert, sondern auf Basis echter Nutzungsprobleme verbessert.
 
-**Supabase-Authentifizierung mit ZHAW-Mail-Validierung (aus U-05)**
+### 4.1 Supabase-Authentifizierung mit ZHAW-Mail-Validierung (aus U-05)
 
 Registrierung und Login laufen über Supabase Auth. Beim Registrieren wird die E-Mail-Adresse serverseitig geprüft: Nur Adressen mit der Domain `@zhaw.ch` werden akzeptiert, was sowohl Studierende (`@students.zhaw.ch`) als auch Dozierende und Mitarbeitende abdeckt. Nach der Registrierung wird eine Bestätigungsmail verschickt; erst nach Klick auf den Bestätigungslink ist das Konto aktiv. Geschützte Routen (Spot erfassen, Review abgeben, Spot bearbeiten) sind nur für eingeloggte Nutzende zugänglich. Der Login-Zustand wird per `+layout.server.js` und `hooks.server.js` auf jeder Seite geprüft.
 
-**Adress-Autocomplete beim Spot-Erfassen (aus U-02)**
+### 4.2 Adress-Autocomplete beim Spot-Erfassen (aus U-02)
 
 Beim Erfassen eines neuen Spots schlägt das Adressfeld während der Eingabe passende Adressen vor, basierend auf der Nominatim-API (OpenStreetMap). Sobald eine Adresse aus dem Dropdown gewählt wird, werden die Koordinaten automatisch gespeichert und die Kartenvorschau aktualisiert sich in Echtzeit. Das löst das in U-02 beobachtete Problem, dass Nutzende nicht wussten, ob ihre Adresse korrekt erfasst wurde.
 
-**Live-Belegungsstatus (aus U-03)**
+### 4.3 Live-Belegungsstatus (aus U-03)
 
 Jede Nutzerin und jeder Nutzer kann auf der Detailseite eines Spots melden, wie voll es gerade ist: «ruhig», «mittel» oder «voll». Meldungen verfallen nach 60 Minuten automatisch. Der angezeigte Status ist der Durchschnitt aller Meldungen im letzten Stundenfenster. Um Spam zu verhindern, gilt ein Rate-Limit von 15 Minuten pro Account und Spot. Auf der Übersichtsseite ist der aktuelle Status direkt in jeder Spot-Card als farbiges Badge sichtbar, ohne dass man zuerst die Detailseite öffnen muss.
 
-**Belegungs-Filter auf der Übersichtsseite**
+### 4.4 Belegungs-Filter auf der Übersichtsseite
 
 Die Spot-Liste auf `/spots` kann nach dem aktuellen Live-Status gefiltert werden: «Alle», «Ruhig», «Mittel» oder «Voll». Damit wird die differenzierende Funktion der App gegenüber Google Maps direkt beim Einstieg sichtbar.
 
-**Spot bearbeiten (Admin-Edit)**
+### 4.5 Spot bearbeiten (Admin-Edit)
 
 Der Projektersteller verfügt über einen einzelnen Admin-Account. Es gibt kein Mehrbenutzer-Rollensystem: Die Berechtigung wird serverseitig geprüft, indem die E-Mail-Adresse der eingeloggten Session mit der in der Umgebungsvariable `ADMIN_EMAIL` hinterlegten Adresse verglichen wird. Nur bei Übereinstimmung ist das Bearbeitungsformular unter `/spots/[id]/edit` zugänglich.
 
-**Website-Link pro Spot (aus U-07)**
+### 4.6 Website-Link pro Spot (aus U-07)
 
 Jeder Spot kann einen Link zur offiziellen Website enthalten, z. B. zur ZHAW-Bibliotheksseite oder zur Reservierungsplattform. Der Link wird auf der Detailseite als klickbarer Button angezeigt.
 
-**Mapbox-Übersichtskarte (aus U-06)**
+### 4.7 Mapbox-Übersichtskarte (aus U-06)
 
 Am unteren Ende der `/spots`-Seite zeigt eine interaktive Mapbox-GL-JS-Karte alle erfassten Spots als Pins. Ein Klick auf einen Pin öffnet die Detailseite des jeweiligen Spots. Die Karte gibt eine räumliche Übersicht und ist besonders nützlich für Nutzende wie Noah, die Spots auf dem Weg zwischen Arbeit und Campus suchen.
 
-**Bild-Upload mit clientseitiger Komprimierung**
+### 4.8 Bild-Upload mit clientseitiger Komprimierung
 
 Beim Erfassen und Bearbeiten von Spots können Bilder per Dateiwahl oder Drag-and-Drop hochgeladen werden. Da Netlify serverless kein persistentes Dateisystem bietet, werden Bilder vollständig im Browser verarbeitet: Das hochgeladene Bild wird auf maximal 1200 Pixel (längste Kante) herunterskaliert und als JPEG (Qualität 0.8) zu einer Base64-Data-URL komprimiert. Diese Data-URL wird im bestehenden `bildUrl`-Feld der MongoDB-Collection `spots` gespeichert. Bestehende Spots mit einem Pfad oder einer externen URL im `bildUrl`-Feld funktionieren unverändert weiter. Für eine produktive Umgebung würde man stattdessen einen dedizierten Object-Storage-Dienst (z. B. Supabase Storage oder AWS S3) nutzen.
 
-**Favoriten**
+### 4.9 Favoriten
 
 Eingeloggte Nutzende können beliebige Spots als Favoriten speichern. Auf der Detailseite jedes Spots erscheint ein «Favorit»-Button (Herz-Icon); ein erneuter Klick entfernt den Spot wieder aus der Liste. Die persönliche Übersicht aller gespeicherten Spots ist unter `/favoriten` abrufbar, die über den Navbar-Link «Favoriten» erreichbar ist. Die Favoritenliste zeigt dieselben Card-Informationen wie die allgemeine Spot-Übersicht (Bild, Name, Live-Status, Adresse, Badges) plus einen «Entfernen»-Button je Karte. Favoriten werden in der MongoDB-Collection `favorites` gespeichert; jeder Eintrag referenziert `userId` (Supabase UUID) und `spotId` (ObjectId).
 
@@ -312,29 +315,17 @@ Zur Datenbank-Sicherheit: Atlas Network Access ist bewusst auf `0.0.0.0/0` geset
 
 ## 6. KI-Deklaration
 
-KI-Tools (primär Claude via Anthropic Cowork & Claude Code) wurden während des gesamten Projekts als Arbeits- und Lernhilfe eingesetzt. Der Einsatz lässt sich in
-drei Bereiche gliedern:
+### 6.1 KI-Tools
 
-**Projektorganisation und Planung**  
-Claude diente als strukturgebender Assistent: Wochenplan besprechen,
-Priorisierungen hinterfragen, Fortschritt tracken. Die Entscheidungen
-(welche Extensions, welche Reihenfolge, wie stark abweichen vom Plan)
-habe ich selbst getroffen, Claude hat sie kritisch begleitet und
-blinde Flecken aufgezeigt.
+Eingesetzt wurden Claude via Anthropic Cowork (Chat-Interface für Planung und Dokumentation) und Claude Code (CLI-Tool für Code-Review direkt im Projektkontext). Der Einsatz erstreckte sich über das gesamte Projekt: Projektorganisation und Planung, Code-Entwicklung sowie Dokumentation.
 
-**Code-Entwicklung**  
-Beim Schreiben von Code habe ich KI als erfahrenen Reviewer eingesetzt:
-Fehlermeldungen erklären lassen, Lösungsansätze diskutieren, bestehenden
-Code auf Probleme prüfen. Eigenständig umgesetzte Teile (z. B.
-MongoDB-Anbindung, SvelteKit-Routing, Supabase-Auth-Flow) wurden danach
-mit KI-Unterstützung bereinigt und verbessert, aber nicht von Grund auf
-generiert.
+### 6.2 Prompt-Vorgehen
 
-**Dokumentation**  
-Bei der README hat KI geholfen, Formulierungen zu schärfen und die
-Struktur einzuhalten. Die inhaltlichen Aussagen wie Personas, Beobachtungen
-aus dem Usability-Test und Designentscheide stammen aus eigener Arbeit
-und Reflexion.
+In der Planungsphase diente Claude als strukturgebender Assistent: Wochenpläne besprechen, Priorisierungen hinterfragen, Fortschritt tracken. Beim Schreiben von Code wurde KI als erfahrener Reviewer eingesetzt: Fehlermeldungen erklären lassen, Lösungsansätze diskutieren, bestehenden Code auf Probleme prüfen. Eigenständig umgesetzte Teile – z. B. MongoDB-Anbindung, SvelteKit-Routing, Supabase-Auth-Flow – wurden anschliessend mit KI-Unterstützung bereinigt und verbessert, aber nicht von Grund auf generiert. Bei der README hat KI geholfen, Formulierungen zu schärfen und die Struktur einzuhalten; die inhaltlichen Aussagen (Personas, Beobachtungen aus dem Usability-Test, Designentscheide) stammen aus eigener Arbeit und Reflexion.
+
+### 6.3 Reflexion
+
+Die Entscheidungen darüber, welche Extensions umgesetzt werden, in welcher Reihenfolge und wie stark vom Plan abgewichen wird, habe ich selbst getroffen – Claude hat sie kritisch begleitet und blinde Flecken aufgezeigt. Der grösste Mehrwert lag nicht im Generieren von Code, sondern im schnellen Feedback auf eigene Überlegungen und im Aufzeigen von Alternativen. Ich habe dabei gelernt, Anforderungen präziser zu formulieren und technische Entscheidungen besser zu begründen. KI beschleunigt die Entwicklung spürbar, ersetzt aber nicht das eigene Verständnis der gewählten Lösungen.
 
 ## 7. Anhang
 
